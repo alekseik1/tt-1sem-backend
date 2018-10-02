@@ -1,0 +1,8 @@
+flask
+gunicorn
+pytest
+psycopg2
+pylint
+pytest-flask
+Flask-JSONRPC
+Authlib
