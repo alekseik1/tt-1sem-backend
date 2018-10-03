@@ -37,3 +37,13 @@ class BasicTests(unittest.TestCase):
             for i in range(N):
                 l.append_left(i)
             self.assertEqual(l.size() == N)
+
+    def test_get(self):
+        N = 5
+        l = DoubleLinkedList(inital_value=N)
+        for i in range(N):
+            l.append_right(i)
+            l.append_left(i)
+        for i in range(N):
+            self.assertEqual(l.get(i), l.get(2*N - 1 - i))      # симметрично созданы
+            self.assertEqual(l.get(i), N - i)
