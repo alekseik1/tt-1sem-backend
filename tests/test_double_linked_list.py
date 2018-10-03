@@ -31,12 +31,12 @@ class BasicTests(unittest.TestCase):
             l = DoubleLinkedList()
             for i in range(N):
                 l.append_right(i)
-            self.assertEqual(l.size() == N)
+            self.assertEqual(len(l) == N)
         with self.subTest("To left border"):
             l = DoubleLinkedList()
             for i in range(N):
                 l.append_left(i)
-            self.assertEqual(l.size() == N)
+            self.assertEqual(len(l) == N)
 
     def test_get(self):
         N = 5
@@ -45,5 +45,5 @@ class BasicTests(unittest.TestCase):
             l.append_right(i)
             l.append_left(i)
         for i in range(N):
-            self.assertEqual(l.get(i), l.get(2*N - 1 - i))      # симметрично созданы
-            self.assertEqual(l.get(i), N - i)
+            self.assertEqual(l[i], l[2*N - 1 - i])      # симметрично созданы
+            self.assertEqual(l[i], N - i)
