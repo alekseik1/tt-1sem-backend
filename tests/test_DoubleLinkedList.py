@@ -108,3 +108,21 @@ class BadTests(unittest.TestCase):
     def test_first_last_empty_list(self):
         self.assertIsNone(self.list.head)
         self.assertIsNone(self.list.tail)
+
+
+if __name__ == '__main__':
+    # Run only the tests in the specified classes
+
+    test_classes_to_run = [BasicTests, BadTests]
+
+    loader = unittest.TestLoader()
+
+    suites_list = []
+    for test_class in test_classes_to_run:
+        suite = loader.loadTestsFromTestCase(test_class)
+        suites_list.append(suite)
+
+    big_suite = unittest.TestSuite(suites_list)
+
+    runner = unittest.TextTestRunner()
+    results = runner.run(big_suite)
