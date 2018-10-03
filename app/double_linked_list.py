@@ -6,6 +6,6 @@ class DoubleLinkedList:
             self.prev = prev
             self.next = next
 
-    def __init__(self):
+    def __init__(self, inital_value=None):
         self.length = 0
         self.start_item = DoubleLinkedList.Item()
