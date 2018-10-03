@@ -50,3 +50,18 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(len(self.list), self.N)
         for i in range(self.N):
             self.assertEqual(self.list[i], self.N - i - 1)
+
+    def test_contains(self):
+        for i in range(self.N):
+            self.list.append((1-i)**2)
+            self.list.unshift(i**2)
+
+        with self.subTest("Python `in` operator"):
+            self.assertFalse(2 in self.list)
+            self.assertFalse(100500 in self.list)
+            self.assertTrue(4 in self.list)
+        with self.subTest("Our `contains()` method"):
+            self.assertTrue(self.list.contains(4))
+            self.assertFalse(self.list.contains(100500))
+            self.assertFalse(self.list.contains(2))
+

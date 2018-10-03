@@ -73,6 +73,9 @@ class DoubleLinkedList(list):
             current_item.next.prev = current_item.prev
             return current_item.value
 
+    def contains(self, value):
+        return value in self
+
     def __getitem__(self, item_number):
         curr_item = self.head
         for i in range(item_number):
@@ -86,3 +89,10 @@ class DoubleLinkedList(list):
             length += 1
             curr_item = curr_item.next
         return length
+
+    def __contains__(self, value):
+        curr_item = self.head
+        while curr_item is not None:
+            if curr_item.value == value:
+                return True
+            curr_item = curr_item.next
