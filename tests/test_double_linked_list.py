@@ -11,39 +11,24 @@ class BasicTests(unittest.TestCase):
             self.fail(e)
         self.assertNotEqual(l, None)
 
-    def test_append_right(self):
+    def test_append(self):
         l = DoubleLinkedList()
         try:
-            l.appned_right(4)
-        except Exception as e:
-            self.fail(e)
-
-    def test_append_left(self):
-        l = DoubleLinkedList()
-        try:
-            l.append_left("asd")
+            l.append(4)
         except Exception as e:
             self.fail(e)
 
     def test_size(self):
         N = 5
-        with self.subTest("To right border"):
-            l = DoubleLinkedList()
-            for i in range(N):
-                l.append_right(i)
-            self.assertEqual(len(l) == N)
-        with self.subTest("To left border"):
-            l = DoubleLinkedList()
-            for i in range(N):
-                l.append_left(i)
-            self.assertEqual(len(l) == N)
+        l = DoubleLinkedList()
+        for i in range(N):
+            l.append(i)
+        self.assertEqual(len(l), N)
 
     def test_get(self):
         N = 5
-        l = DoubleLinkedList(inital_value=N)
+        l = DoubleLinkedList()
         for i in range(N):
-            l.append_right(i)
-            l.append_left(i)
+            l.append(i)
         for i in range(N):
-            self.assertEqual(l[i], l[2*N - 1 - i])      # симметрично созданы
-            self.assertEqual(l[i], N - i)
+            self.assertEqual(l[i], i)
