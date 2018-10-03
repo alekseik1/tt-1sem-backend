@@ -25,7 +25,7 @@ class BasicTests(unittest.TestCase):
         except Exception as e:
             self.fail(e)
 
-    def test_get_size(self):
+    def test_size(self):
         N = 5
         with self.subTest("To right border"):
             l = DoubleLinkedList()
