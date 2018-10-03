@@ -74,3 +74,37 @@ class BasicTests(unittest.TestCase):
         for i in range(self.N):
             self.list.append(i**2)
         self.assertEqual(self.list.last().value, (self.N-1)**2)
+
+
+class BadTests(unittest.TestCase):
+    """
+    Класс с очень плохими тестами
+    """
+
+    def setUp(self):
+        self.list = DoubleLinkedList()
+        self.N = 30
+
+    def test_empty_list_size(self):
+        self.assertEqual(len(self.list), 0)
+
+    def test_pop_empty_list(self):
+        try:
+            self.list.pop()
+        except Exception as e:
+            self.assertEqual(e.args[0], 'The list is empty!')
+
+    def test_get_incorrect_index(self):
+        with self.subTest("Too big index"):
+            for i in range(5):
+                self.list.append(i)
+            with self.assertRaises(IndexError):
+                self.list[1000]
+        with self.subTest("Empty list"):
+            self.list = DoubleLinkedList()
+            with self.assertRaises(IndexError):
+                self.list[0]
+
+    def test_first_last_empty_list(self):
+        self.assertIsNone(self.list.head)
+        self.assertIsNone(self.list.tail)

@@ -63,7 +63,10 @@ class DoubleLinkedList(list):
 
     def pop(self, index: int = ...):
         if index is ...:
-            self.tail.prev.next = None
+            try:
+                self.tail.prev.next = None
+            except AttributeError as e:
+                raise IndexError("The list is empty!")
             return self.tail.value
         else:
             current_item = self.head
@@ -84,7 +87,12 @@ class DoubleLinkedList(list):
 
     def __getitem__(self, item_number):
         curr_item = self.head
+        if curr_item is None:
+            # Такое бывает, когда пытаемся что-то получить из пустого списка
+            raise IndexError("Empty list")
         for i in range(item_number):
+            if curr_item.next is None:
+                raise IndexError("Reached end of the list")
             curr_item = curr_item.next
         return curr_item.value
 
