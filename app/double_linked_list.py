@@ -58,6 +58,9 @@ class DoubleLinkedList(list):
 
             current_node = current_node.next
 
+    def delete(self, value):
+        return self.remove(value)
+
     def pop(self, index: int = ...):
         if index is ...:
             self.tail.prev.next = None
