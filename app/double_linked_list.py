@@ -20,6 +20,9 @@ class DoubleLinkedList(list):
             self.tail.next = item
             self.tail = item
 
+    def push(self, data):
+        return self.append(data)
+
     def remove(self, node_value):
         current_node = self.head
 
