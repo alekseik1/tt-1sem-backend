@@ -76,6 +76,12 @@ class DoubleLinkedList(list):
     def contains(self, value):
         return value in self
 
+    def first(self):
+        return self.head
+
+    def last(self):
+        return self.tail
+
     def __getitem__(self, item_number):
         curr_item = self.head
         for i in range(item_number):

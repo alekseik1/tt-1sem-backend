@@ -65,3 +65,12 @@ class BasicTests(unittest.TestCase):
             self.assertFalse(self.list.contains(100500))
             self.assertFalse(self.list.contains(2))
 
+    def test_first(self):
+        for i in range(self.N):
+            self.list.append(i**2)
+        self.assertEqual(self.list.first().value, 0)
+
+    def test_last(self):
+        for i in range(self.N):
+            self.list.append(i**2)
+        self.assertEqual(self.list.last().value, (self.N-1)**2)
