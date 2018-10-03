@@ -32,6 +32,18 @@ class DoubleLinkedList(list):
             self.head.prev = item
             self.head = item
 
+    def shift(self, index: int = None):
+        if index is None:
+            self.head.next.prev = None
+            return self.head.value
+        else:
+            current_item = self.tail
+            for i in range(index):
+                current_item = current_item.prev
+            current_item.next.prev = current_item.prev
+            current_item.prev.next = current_item.next
+            return current_item.value
+
     def remove(self, node_value):
         current_node = self.head
 

@@ -33,6 +33,14 @@ class BasicTests(unittest.TestCase):
         with self.subTest("Последний"):
             self.assertEqual(self.list.pop(), (self.N-1)**2)
 
+    def test_shift(self):
+        for i in range(self.N):
+            self.list.unshift(i**2)
+        with self.subTest("Посередине"):
+            self.assertEqual(self.list.shift(self.N // 2), (self.N // 2)**2)
+        with self.subTest("Последний"):
+            self.assertEqual(self.list.shift(), (self.N - 1)**2)
+
     def test_unshift(self):
         for i in range(self.N):
             try:
