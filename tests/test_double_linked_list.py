@@ -4,31 +4,31 @@ from app.double_linked_list import DoubleLinkedList
 
 class BasicTests(unittest.TestCase):
 
-    def test_create(self):
-        try:
-            l = DoubleLinkedList()
-        except Exception as e:
-            self.fail(e)
-        self.assertNotEqual(l, None)
+    def setUp(self):
+        self.list = DoubleLinkedList()
+        self.N = 10
 
     def test_append(self):
-        l = DoubleLinkedList()
         try:
-            l.append(4)
+            self.list.append(4)
         except Exception as e:
             self.fail(e)
 
     def test_size(self):
-        N = 5
-        l = DoubleLinkedList()
-        for i in range(N):
-            l.append(i)
-        self.assertEqual(len(l), N)
+        for i in range(self.N):
+            self.list.append(i)
+        self.assertEqual(len(self.list), self.N)
 
     def test_get(self):
-        N = 5
-        l = DoubleLinkedList()
-        for i in range(N):
-            l.append(i)
-        for i in range(N):
-            self.assertEqual(l[i], i)
+        for i in range(self.N):
+            self.list.append(i)
+        for i in range(self.N):
+            self.assertEqual(self.list[i], i)
+
+    def test_pop(self):
+        for i in range(self.N):
+            self.list.append(i**2)
+        with self.subTest("Посередине"):
+            self.assertEqual(self.list.pop(self.N // 2), (self.N // 2)**2)
+        with self.subTest("Последний"):
+            self.assertEqual(self.list.pop(), (self.N-1)**2)
