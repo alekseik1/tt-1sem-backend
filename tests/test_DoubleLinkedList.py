@@ -32,3 +32,13 @@ class BasicTests(unittest.TestCase):
             self.assertEqual(self.list.pop(self.N // 2), (self.N // 2)**2)
         with self.subTest("Последний"):
             self.assertEqual(self.list.pop(), (self.N-1)**2)
+
+    def test_unshift(self):
+        for i in range(self.N):
+            try:
+                self.list.unshift(i)
+            except Exception as e:
+                self.fail(e)
+        self.assertEqual(len(self.list), self.N)
+        for i in range(self.N):
+            self.assertEqual(self.list[i], self.N - i - 1)

@@ -23,6 +23,15 @@ class DoubleLinkedList(list):
     def push(self, data):
         return self.append(data)
 
+    def unshift(self, data):
+        item = DoubleLinkedList.Node(data)
+        if self.head is None:
+            self.head = self.tail = item
+        else:
+            item.prev, item.next = None, self.head
+            self.head.prev = item
+            self.head = item
+
     def remove(self, node_value):
         current_node = self.head
 
