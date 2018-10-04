@@ -36,13 +36,12 @@ class DoubleLinkedList(list):
         if index is None:
             self.head.next.prev = None
             return self.head.value
-        else:
-            current_item = self.tail
-            for i in range(index):
-                current_item = current_item.prev
-            current_item.next.prev = current_item.prev
-            current_item.prev.next = current_item.next
-            return current_item.value
+        current_item = self.tail
+        for _ in range(index):
+            current_item = current_item.prev
+        current_item.next.prev = current_item.prev
+        current_item.prev.next = current_item.next
+        return current_item.value
 
     def remove(self, node_value):
         current_node = self.head
@@ -69,16 +68,15 @@ class DoubleLinkedList(list):
         if index is ...:
             try:
                 self.tail.prev.next = None
-            except AttributeError as e:
+            except AttributeError:
                 raise IndexError("The list is empty!")
             return self.tail.value
-        else:
-            current_item = self.head
-            for i in range(index):
-                current_item = current_item.next
-            current_item.prev.next = current_item.next
-            current_item.next.prev = current_item.prev
-            return current_item.value
+        current_item = self.head
+        for _ in range(index):
+            current_item = current_item.next
+        current_item.prev.next = current_item.next
+        current_item.next.prev = current_item.prev
+        return current_item.value
 
     def contains(self, value):
         return value in self
@@ -94,7 +92,7 @@ class DoubleLinkedList(list):
         if curr_item is None:
             # Такое бывает, когда пытаемся что-то получить из пустого списка
             raise IndexError("Empty list")
-        for i in range(item_number):
+        for _ in range(item_number):
             if curr_item.next is None:
                 raise IndexError("Reached end of the list")
             curr_item = curr_item.next
