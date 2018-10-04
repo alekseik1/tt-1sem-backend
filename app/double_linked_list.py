@@ -24,6 +24,11 @@ class DoubleLinkedList(list):
         return self.append(data)
 
     def unshift(self, data):
+        """
+        Добавляет элемент со значением **data** влево списка
+
+        :param data: Значение, которое будет добавлено
+        """
         item = DoubleLinkedList.Node(data)
         if self.head is None:
             self.head = self.tail = item
@@ -33,6 +38,13 @@ class DoubleLinkedList(list):
             self.head = item
 
     def shift(self, index: int = None):
+        """
+        Удаляет элемент на **index** позиции слева. Без указания индекса
+        удалит самый левый элемент
+
+        :param index: (опционально) Номер удаляемого элемента
+        :return: Значение удаленного элемента
+        """
         if index is None:
             self.head.next.prev = None
             return self.head.value
@@ -44,6 +56,12 @@ class DoubleLinkedList(list):
         return current_item.value
 
     def remove(self, node_value):
+        """
+         Удаляет элемент с заданным значением
+
+         :param node_value: Значение удаляемого элемента
+         :raises IndexError: если значение не было найдено
+         """
         current_node = self.head
         is_found = False
 
@@ -62,9 +80,22 @@ class DoubleLinkedList(list):
             raise IndexError("No such element!")
 
     def delete(self, value):
+        """
+         Удаляет элемент с заданным значением
+
+         :param value: Значение удаляемого элемента
+         :raises IndexError: если значение не было найдено
+         """
         return self.remove(value)
 
     def pop(self, index: int = ...):
+        """
+        Удаляет элемент на **index** позиции справа. Без указания
+        индекса удалит самый правый элемент
+
+        :param index: (опционально) Номер удаляемого элемента
+        :return: Значение удаленного элемента
+        """
         if index is ...:
             try:
                 self.tail.prev.next = None
