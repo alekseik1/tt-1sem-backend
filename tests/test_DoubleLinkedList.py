@@ -75,6 +75,20 @@ class BasicTests(unittest.TestCase):
             self.list.append(i**2)
         self.assertEqual(self.list.last().value, (self.N-1)**2)
 
+    def test_last_after_push(self):
+        self.list.push(2)
+        self.assertEqual(self.list[-1], 2)
+
+    def test_first_after_unshift(self):
+        self.list.unshift(100500)
+        self.assertEqual(self.list[0], 100500)
+
+    def test_iterator(self):
+        for i in range(100):
+            self.list.append(i)
+        for value in self.list:
+            self.assertEqual(value, i)
+
 
 class BadTests(unittest.TestCase):
     """
