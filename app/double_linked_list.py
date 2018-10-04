@@ -46,6 +46,7 @@ class DoubleLinkedList(list):
 
     def remove(self, node_value):
         current_node = self.head
+        is_found = False
 
         while current_node is not None:
             if current_node.value == node_value:
@@ -55,9 +56,10 @@ class DoubleLinkedList(list):
                 else:
                     self.head = current_node.next
                     current_node.next.prev = None
+                is_found = True
 
             current_node = current_node.next
-        else:
+        if not is_found:
             raise IndexError("No such element!")
 
     def delete(self, value):
