@@ -89,6 +89,11 @@ class BasicTests(unittest.TestCase):
         for value in self.list:
             self.assertEqual(value, i)
 
+    def test_delete(self):
+        for i in range(10):
+            self.list.push(i)
+        self.list.delete(5)
+
 
 class BadTests(unittest.TestCase):
     """
