@@ -48,7 +48,7 @@ class DoubleLinkedList(list):
         current_node = self.head
 
         while current_node is not None:
-            if current_node.data == node_value:
+            if current_node.value == node_value:
                 if current_node.prev is not None:
                     current_node.prev.next = current_node.next
                     current_node.next.prev = current_node.prev
@@ -57,6 +57,8 @@ class DoubleLinkedList(list):
                     current_node.next.prev = None
 
             current_node = current_node.next
+        else:
+            raise IndexError("No such element!")
 
     def delete(self, value):
         return self.remove(value)

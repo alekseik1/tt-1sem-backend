@@ -123,6 +123,12 @@ class BadTests(unittest.TestCase):
         self.assertIsNone(self.list.head)
         self.assertIsNone(self.list.tail)
 
+    def test_delete_bad_element(self):
+        for i in range(10):
+            self.list.push(100)
+        with self.assertRaises(IndexError):
+            self.list.remove(105)
+
 
 if __name__ == '__main__':
     # Run only the tests in the specified classes
