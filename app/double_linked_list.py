@@ -143,3 +143,11 @@ class DoubleLinkedList(list):
             if curr_item.value == value:
                 return True
             curr_item = curr_item.next
+
+    def __str__(self):
+        result = ''
+        curr_item = self.head
+        while curr_item is not None:
+            result += '%s ' % curr_item.value
+            curr_item = curr_item.next
+        return result[:-1]

@@ -94,6 +94,11 @@ class BasicTests(unittest.TestCase):
             self.list.push(i)
         self.list.delete(5)
 
+    def test_str(self):
+        for i in range(5):
+            self.list.push(i)
+        self.assertEqual(str(self.list), '0 1 2 3 4')
+
 
 class BadTests(unittest.TestCase):
     """
