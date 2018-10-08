@@ -69,7 +69,8 @@ class DoubleLinkedList(list):
             if current_node.value == node_value:
                 if current_node.prev is not None:
                     current_node.prev.next = current_node.next
-                    current_node.next.prev = current_node.prev
+                    if current_node.next is not None:
+                        current_node.next.prev = current_node.prev
                 else:
                     self.head = current_node.next
                     current_node.next.prev = None
