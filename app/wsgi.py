@@ -12,6 +12,6 @@ def debug_print(env):
 def application(env, start_response):
     start_response('200 OK', [('Content-Type', 'application/json')])
     answer = json.dumps({"time": datetime.datetime.now().isoformat(),
-                         "url": env['PATH_INFO']})
+                         "url": '{}:{}{}'.format(env['SERVER_NAME'], env['SERVER_PORT'], env['PATH_INFO'])})
     # debug_print(env)      # Нужно было, чтобы посмотреть на методы
     return [answer.encode('utf-8')]
