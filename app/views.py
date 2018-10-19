@@ -28,6 +28,10 @@ def form():
 
 @app.route('/get_user_chats/<string:user>/')
 def get_user_chats(user="Nobody"):
+    """
+    Чаты пользователя
+    """
+
     responce_dict = {'status_code': 200,
                      'mimetype': 'text/json',
                      'method': request.path}
