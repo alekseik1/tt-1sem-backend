@@ -26,7 +26,7 @@ def form():
         return rv
 
 
-@app.route('/get_user_chats/<string:user>/')
+@app.route('/get_user_chats/<string:user>/', methods=['GET'])
 def get_user_chats(user="Nobody"):
     """
     Чаты пользователя
@@ -43,7 +43,7 @@ def get_user_chats(user="Nobody"):
     return response
 
 
-@app.route('/get_user_contacts/<string:user>/')
+@app.route('/get_user_contacts/<string:user>/', methods=['GET'])
 def get_user_contacts(user="Nobody"):
     """
     Контакты пользователя
@@ -61,7 +61,7 @@ def get_user_contacts(user="Nobody"):
     return response
 
 
-@app.route('/create_chat/<string:chatname>/')
+@app.route('/create_chat/<string:chatname>/', methods=['POST'])
 def create_chat(chatname="topsecret"):
     """
     Создать чат
