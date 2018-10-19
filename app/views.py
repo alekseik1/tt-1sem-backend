@@ -59,3 +59,21 @@ def get_user_contacts(user="Nobody"):
         mimetype=response_dict.get('mimetype', 'text/json')
     )
     return response
+
+
+@app.route('/create_chat/<string:chatname>/')
+def create_chat(chatname="topsecret"):
+    """
+    Создать чат
+    """
+    response_dict = {
+        'status_code': 200,
+        'mimetype': 'text/json',
+        'method': request.path
+    }
+    response = app.response_class(
+        response=json.dumps(response_dict),
+        status=response_dict.get('status', 404),
+        mimetype=response_dict.get('mimetype', 'text/json')
+    )
+    return response
