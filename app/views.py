@@ -1,5 +1,6 @@
-from flask import request, jsonify
+from flask import request, jsonify, make_response, render_template
 from app import app
+import json
 
 
 @app.route('/')
@@ -23,3 +24,16 @@ def form():
     else:
         rv = jsonify(request.form)
         return rv
+
+
+@app.route('/get_user_chats/<string:user>/')
+def get_user_chats(user="Nobody"):
+    responce_dict = {'status_code': 200,
+                     'mimetype': 'text/json',
+                     'method': request.path}
+    response = app.response_class(
+        response=json.dumps(responce_dict),
+        status=responce_dict.get('status_code', 404),
+        mimetype=responce_dict.get('mimetype', 'text/json')
+    )
+    return response
