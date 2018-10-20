@@ -27,6 +27,7 @@ def form():
 
 
 @app.route('/get_user_chats/<string:user>/', methods=['GET'])
+@app.route('/get_user_chats/<string:user>', methods=['GET'])
 def get_user_chats(user="Nobody"):
     """
     Чаты пользователя
@@ -44,6 +45,7 @@ def get_user_chats(user="Nobody"):
 
 
 @app.route('/get_user_contacts/<string:user>/', methods=['GET'])
+@app.route('/get_user_contacts/<string:user>', methods=['GET'])
 def get_user_contacts(user="Nobody"):
     """
     Контакты пользователя
@@ -55,13 +57,14 @@ def get_user_contacts(user="Nobody"):
     }
     response = app.response_class(
         response=json.dumps(response_dict),
-        status=response_dict.get('status', 404),
+        status=response_dict.get('status_code', 404),
         mimetype=response_dict.get('mimetype', 'text/json')
     )
     return response
 
 
 @app.route('/create_chat/<string:chatname>/', methods=['POST'])
+@app.route('/create_chat/<string:chatname>', methods=['POST'])
 def create_chat(chatname="topsecret"):
     """
     Создать чат
@@ -73,7 +76,7 @@ def create_chat(chatname="topsecret"):
     }
     response = app.response_class(
         response=json.dumps(response_dict),
-        status=response_dict.get('status', 404),
+        status=response_dict.get('status_code', 404),
         mimetype=response_dict.get('mimetype', 'text/json')
     )
     return response
