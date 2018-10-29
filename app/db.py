@@ -2,6 +2,7 @@ import flask
 import psycopg2
 from instance.config import DevelopmentConfig as config
 import psycopg2.extras
+from app import app
 
 
 def get_connection():
@@ -45,3 +46,7 @@ def _commit_db():
         delattr(flask.g, 'dbconn')
         return True
     return False
+
+
+flask.got_request_exception.connect(_rollback_db, app)
+flask.request_finished.connect(_commit_db(), app)
