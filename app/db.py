@@ -24,6 +24,11 @@ def query_one(sql, **params):
         return dict(cur.fetchone())
 
 
+def insert_one(sql, **params):
+    with get_cursor() as cur:
+        cur.execute(sql, params)
+
+
 def query_all(sql, **params):
     with get_cursor() as cur:
         cur.execute(sql, params)
@@ -38,7 +43,7 @@ def _rollback_db(sender, exception, **extra):
         delattr(flask.g, 'dbconn')
 
 
-def _commit_db():
+def _commit_db(sender, *args, **extra):
     if hasattr(flask.g, 'dbconn'):
         conn = flask.g.dbconn
         conn.commit()
@@ -49,4 +54,4 @@ def _commit_db():
 
 
 flask.got_request_exception.connect(_rollback_db, app)
-flask.request_finished.connect(_commit_db(), app)
+flask.request_finished.connect(_commit_db, app)
