@@ -18,12 +18,20 @@ class AppTest(unittest.TestCase):
         names = ['tt-team', 'ZOG']
         for name in names:
             rv = self.app.post(
-                '/create_chat/', data=dict(
-                    topic=name,
-                    is_group=0
-                ))
-            data = json.loads(rv.json)[0]
-            self.assertEqual(0, 0)
+                '/create_chat/?topic=%s&is_group=0' % name)
+            data = rv.json
+            self.assertEqual(data.get('topic', None), name)
+
+    def test_list_messages_by_chat(self):
+        rv = self.app.get('/messages/?chat_id={}'
+                          .format(23))  # TODO: сделать тесты через chat_topic
+        data = rv.json
+        self.assertIsNotNone(data)
+
+    def test_find_user(self):
+        rv = self.app.get('/find_user/?nick=%s' % 'another.user')
+        data = rv.json
+        self.assertNotEqual(len(data), 0)
 
 
 if __name__ == '__main__':
