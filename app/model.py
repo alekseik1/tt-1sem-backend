@@ -16,6 +16,9 @@ def list_messages_by_chat(chat_id, limit):
 def _get_all_user_info(param: str="user_id",
                        param_value: str="0",
                        limit: int=100):
+    # TODO: Переделай через одну передачу и проверку всех условий
+    # TODO: вот таким образом
+    # TODO: WHERE nick= %(nick)s OR name = %(name)s
     return db.query_all("""
     SELECT user_id, nick, name, avatar
     FROM users
