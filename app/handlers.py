@@ -10,5 +10,14 @@ def messages():
     return jsonify(messages)
 
 
+@app.route('/find_user/')
+def find_user():
+    user_name = request.args.get('user_name', None, type=str)
+    users = model.find_user()
+    if user_name:
+        model.find_user(user_name=user_name)
+    nick = request.args.get('nick', None, type=str)
+
+
 if __name__ == '__main__':
     app.run()
