@@ -19,21 +19,20 @@ def _get_all_user_info(param: str="user_id",
     return db.query_all("""
     SELECT user_id, nick, name, avatar
     FROM users
-    WHERE %(param)s = %(param_value)s
-    ORDER BY %(param)s DESC
-    LIMIT %(limit)s
-    """, param=param, param_value=param_value, limit=limit)
+    WHERE {} = %(param_value)s
+    LIMIT %(limit)s;
+    """.format(param), param_value=param_value, limit=int(limit))
 
 
 def find_user(limit: int=100, **kwargs):
     user_name = kwargs.get('user_name', None)
     if user_name:
-        return _get_all_user_info('user_name', user_name)
+        return _get_all_user_info("user_name", user_name, limit=limit)
 
     nick = kwargs.get('nick', None)
     if nick:
-        return _get_all_user_info('nick', nick)
+        return _get_all_user_info("nick", nick, limit=limit)
 
     user_id = kwargs.get('user_id', None)
     if user_id:
-        return _get_all_user_info('user_id', user_id)
+        return _get_all_user_info("user_id", user_id, limit=limit)

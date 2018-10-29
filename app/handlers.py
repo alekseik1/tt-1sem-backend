@@ -13,10 +13,16 @@ def messages():
 @app.route('/find_user/')
 def find_user():
     user_name = request.args.get('user_name', None, type=str)
-    users = model.find_user()
+    users = []
     if user_name:
-        model.find_user(user_name=user_name)
+        users = model.find_user(user_name=user_name)
     nick = request.args.get('nick', None, type=str)
+    if nick:
+        users = model.find_user(nick=nick)
+    user_id = request.args.get('user_id', None, type=int)
+    if user_id:
+        users = model.find_user(user_id=user_id)
+    return jsonify(users)
 
 
 if __name__ == '__main__':
