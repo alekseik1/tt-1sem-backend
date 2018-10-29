@@ -25,5 +25,16 @@ def find_user():
     return jsonify(users)
 
 
+@app.route('/create_chat/')
+def create_chat():
+    topic = str(request.args.get('topic'))
+    is_group_chat = int(request.args.get('is_group'))
+    model.create_chat(topic, is_group_chat)
+    return jsonify({
+        'topic': topic,
+        'is_group_chat': is_group_chat
+    })
+
+
 if __name__ == '__main__':
     app.run()

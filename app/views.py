@@ -57,11 +57,3 @@ def get_user_contacts(user="Nobody"):
     """
     return create_stub_answer(request, 200)
 
-
-@app.route('/create_chat/<string:chatname>/', methods=['POST'])
-@app.route('/create_chat/<string:chatname>', methods=['POST'])
-def create_chat(chatname="topsecret"):
-    """
-    Создать чат
-    """
-    return create_stub_answer(request, 200)

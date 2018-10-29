@@ -39,3 +39,10 @@ def find_user(limit: int=100, **kwargs):
     user_id = kwargs.get('user_id', None)
     if user_id:
         return _get_all_user_info("user_id", user_id, limit=limit)
+
+
+def create_chat(topic: str="", is_group: int=0):
+    return db.insert_one("""
+    INSERT INTO chats (is_group_chat, topic)
+    VALUES ( %(is_group)s , %(topic)s );
+    """, is_group=str(is_group), topic=str(topic))
