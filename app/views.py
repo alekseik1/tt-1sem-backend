@@ -85,8 +85,9 @@ def find_user():
 def create_chat():
     topic = str(request.args.get('topic'))
     is_group_chat = int(request.args.get('is_group'))
-    model.create_chat(topic, is_group_chat)
+    chat_id = model.create_chat(topic, is_group_chat)
     return jsonify({
         'topic': topic,
-        'is_group_chat': is_group_chat
+        'is_group_chat': is_group_chat,
+        'chat_id': chat_id
     })

@@ -27,6 +27,7 @@ def query_one(sql, **params):
 def insert_one(sql, **params):
     with get_cursor() as cur:
         cur.execute(sql, params)
+        return cur.fetchone()[0]
 
 
 def query_all(sql, **params):

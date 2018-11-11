@@ -44,5 +44,6 @@ def find_user(limit: int=100, **kwargs):
 def create_chat(topic: str="", is_group: int=0):
     return db.insert_one("""
     INSERT INTO chats (is_group_chat, topic)
-    VALUES ( %(is_group)s , %(topic)s );
+    VALUES ( %(is_group)s , %(topic)s )
+    RETURNING chat_id;
     """, is_group=str(is_group), topic=str(topic))
