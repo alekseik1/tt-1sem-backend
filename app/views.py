@@ -74,16 +74,14 @@ def messages():
 
 @app.route('/find_user/')
 def find_user():
-    user_name = request.args.get('user_name', None, type=str)
-    users = []
-    if user_name:
-        users = model.find_user(user_name=user_name)
-    nick = request.args.get('nick', None, type=str)
-    if nick:
-        users = model.find_user(nick=nick)
-    user_id = request.args.get('user_id', None, type=int)
-    if user_id:
-        users = model.find_user(user_id=user_id)
+    user_name = request.args.get('user_name', '%', type=str)
+    user_nick = request.args.get('user_nick', '%', type=str)
+    user_id = request.args.get('user_id', '%')
+
+    limit = request.args.get('limit', 100, type=int)
+    offset = request.args.get('offset', 0, type=int)
+
+    users = model.find_user(limit, offset, user_name=user_name, user_nick=user_nick, user_id=user_id)
     return jsonify(users)
 
 

@@ -32,18 +32,19 @@ def _get_all_user_info(param: str="user_id",
     """.format(param), param_value=param_value, limit=int(limit))
 
 
-def find_user(limit: int=100, **kwargs):
-    user_name = kwargs.get('user_name', None)
-    if user_name:
-        return _get_all_user_info("user_name", user_name, limit=limit)
-
-    nick = kwargs.get('nick', None)
-    if nick:
-        return _get_all_user_info("nick", nick, limit=limit)
-
-    user_id = kwargs.get('user_id', None)
-    if user_id:
-        return _get_all_user_info("user_id", user_id, limit=limit)
+def find_user(limit: int=100, offset: int=0, **kwargs):
+    user_name, user_nick, user_id = kwargs.get('user_name'), kwargs.get('user_nick'), kwargs.get('user_id')
+    db_result = db.query_all("""
+    SELECT user_id, nick, name, avatar
+    FROM users
+    WHERE name LIKE %(user_name)s
+    AND nick LIKE %(nick)s
+    LIMIT %(limit)s
+    """, user_name=str(user_name), nick=str(user_nick), limit=limit)
+    print(db_result)
+    if offset >= len(db_result):
+        return []
+    return db_result[offset:]
 
 
 def create_chat(topic: str="", is_group: int=0):
