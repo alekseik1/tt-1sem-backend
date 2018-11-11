@@ -34,13 +34,15 @@ def _get_all_user_info(param: str="user_id",
 
 def find_user(limit: int=100, offset: int=0, **kwargs):
     user_name, user_nick, user_id = kwargs.get('user_name'), kwargs.get('user_nick'), kwargs.get('user_id')
+    # TODO: возможно, преобразование к TEXT будет замедлять БД в будущем
     db_result = db.query_all("""
     SELECT user_id, nick, name, avatar
     FROM users
     WHERE name LIKE %(user_name)s
     AND nick LIKE %(nick)s
+    AND CAST(user_id AS TEXT) LIKE %(user_id)s
     LIMIT %(limit)s
-    """, user_name=str(user_name), nick=str(user_nick), limit=limit)
+    """, user_name=str(user_name), nick=str(user_nick), limit=limit, user_id=str(user_id))
     print(db_result)
     if offset >= len(db_result):
         return []

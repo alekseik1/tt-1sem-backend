@@ -76,7 +76,7 @@ def messages():
 def find_user():
     user_name = request.args.get('user_name', '%', type=str)
     user_nick = request.args.get('user_nick', '%', type=str)
-    user_id = request.args.get('user_id', '%')
+    user_id = request.args.get('user_id', '%', type=str)
 
     limit = request.args.get('limit', 100, type=int)
     offset = request.args.get('offset', 0, type=int)
