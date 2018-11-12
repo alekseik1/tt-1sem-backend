@@ -8,7 +8,7 @@ def list_messages_by_chat(chat_id, limit, offset, from_id=0):
         FROM messages
         JOIN users USING (user_id)
         WHERE chat_id = %(chat_id)s
-        AND message_id > %(from_id)
+        AND message_id > %(from_id)s
         ORDER BY added_at DESC
         LIMIT %(limit)s
 """, chat_id=int(chat_id), limit=int(limit), from_id=from_id)
