@@ -88,3 +88,8 @@ def create_chat(topic='Bad chat', is_group=0):
 @jsonrpc.method('print_name')
 def foo():
     return {"name": "Ivan"}
+
+
+@jsonrpc.method('send_message')
+def send_message(chat_id=0, user_id=0, content='Hello', added_at="2018-11-12 20:09:07"):
+    return {'message_id': model.send_message(chat_id, user_id, content, added_at)}

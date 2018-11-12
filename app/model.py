@@ -55,3 +55,11 @@ def create_chat(topic: str="", is_group: int=0):
     VALUES ( %(is_group)s , %(topic)s )
     RETURNING chat_id;
     """, is_group=str(is_group), topic=str(topic))
+
+
+def send_message(chat_id: int=0, user_id: int=0, content: str='hello', added_at: str="1999-10-10 20:09:07"):
+    return db.insert_one("""
+    INSERT INTO messages (chat_id, user_id, content, added_at)
+    VALUES ( %(chat_id)s, %(user_id)s, %(content)s, %(added_at)s )
+    RETURNING message_id;
+    """, chat_id=chat_id, user_id=user_id, content=content, added_at=added_at)
