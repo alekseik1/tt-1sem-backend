@@ -57,8 +57,8 @@ def get_user_contacts(user_id=0):
     return create_stub_answer(request, 200)
 
 
-@jsonrpc.method('get_messages')
-def messages(chat_id=0, limit=10, offset=0, from_id=0):
+@jsonrpc.method('get_messages_by_chat')
+def messages_by_chat(chat_id=0, limit=10, offset=0, from_id=0):
     if not chat_id:
         return {}
     chat_messages = model.list_messages_by_chat(chat_id, limit, offset, from_id=from_id)
