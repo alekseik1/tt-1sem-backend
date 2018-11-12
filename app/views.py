@@ -65,9 +65,9 @@ def messages():
     if not chat_id:
         return jsonify({})
     # Лимит, если передан
-    limit = int(request.args.get('limit'), 10)
+    limit = int(request.args.get('limit', 10))
     # Offset, если передан
-    offset = int(request.args.get('offset'), 0)
+    offset = int(request.args.get('offset', 0))
     messages = model.list_messages_by_chat(chat_id, limit, offset)
     return jsonify(messages)
 
