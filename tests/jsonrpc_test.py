@@ -15,6 +15,15 @@ class JsonrpcTest(unittest.TestCase):
         a = self.app.post('/api/', json=request_json)
         self.assertNotEqual(a, None)
 
+    def test_get_messages_by_chat(self):
+        request_json = {'method': 'get_messages_by_chat', 'params': {
+            'chat_id': 113
+        }, 'id': 2}
+        a = self.app.post('/api/', json=request_json)
+        self.assertNotEqual(a, None)
+        self.assertIsNotNone(a.json.get('result'))
+        self.assertEqual(a.json['id'], 2, 'Id не совпадают')
+
 
 if __name__ == '__main__':
     unittest.main()
