@@ -1,7 +1,7 @@
 from app import db
 
 
-def list_messages_by_chat(chat_id, limit, offset, from_id=0):
+def list_messages_by_chat(chat_id, limit, offset=0, from_id=0):
     tmp_res = db.query_all("""
         SELECT user_id, nick, name,
                message_id, content, added_at
@@ -10,12 +10,10 @@ def list_messages_by_chat(chat_id, limit, offset, from_id=0):
         WHERE chat_id = %(chat_id)s
         AND message_id > %(from_id)s
         ORDER BY added_at DESC
+        OFFSET %(offset)s ROWS
         LIMIT %(limit)s
-""", chat_id=int(chat_id), limit=int(limit), from_id=from_id)
-    if offset >= len(tmp_res):
-        return []
-    else:
-        return tmp_res[offset:]
+""", chat_id=int(chat_id), limit=int(limit), from_id=from_id, offset=int(offset))
+    return tmp_res
 
 
 def _get_all_user_info(param: str="user_id",
