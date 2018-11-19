@@ -60,9 +60,10 @@ def create_chat(topic: str,
         """, is_group=str(is_group), topic=str(topic))
     # Каждого из участников добавим в этот чат
     for member in members:
-        db.insert_one("""
+        db.query_one("""
         INSERT INTO members (user_id, chat_id, new_messages)
         VALUES ( %(member)s, %(chat_id)s, 0)
+        RETURNING user_id
         """, member=member, chat_id=chat_id)
     return chat_id
 
