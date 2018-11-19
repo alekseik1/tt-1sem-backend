@@ -77,8 +77,8 @@ def find_user(name='%', nick='%', user_id='%'):
 
 
 @jsonrpc.method('create_chat')
-def create_chat(topic='Bad chat', is_group=0):
-    chat_id = model.create_chat(str(topic), int(is_group))
+def create_chat(topic='Bad chat', members=[0], is_group=0):
+    chat_id = model.create_chat(topic=str(topic), members=members, is_group=is_group)
     return {
         'topic': topic,
         'is_group_chat': is_group,
