@@ -93,9 +93,4 @@ def foo():
 
 @jsonrpc.method('send_message')
 def send_message(chat_id=0, user_id=0, content='Hello', added_at="2018-11-12 20:09:07"):
-    # if chat_id < 0 or user_id < 0 or type(content) !=
-    raise InvalidRequestError('Bad')
-    # TODO: тут надо менять не только таблицу `messages`, но и members!
-    # TODO: Для всех пользователей заданного чата надо увеличить число непрочитанных сообщений на 1
-    # В методе чтения сообщений надо будет, напротив, уменьшать число непрочитанных сообщений
     return {'message_id': model.send_message(chat_id, user_id, content, added_at)}

@@ -58,7 +58,13 @@ def create_chat(topic: str="", is_group: int=0):
 
 
 def send_message(chat_id: int=0, user_id: int=0, content: str='hello', added_at: str="1999-10-10 20:09:07"):
+    # TODO: В методе чтения сообщений надо будет, напротив, уменьшать число непрочитанных сообщений
     return db.insert_one("""
+    /* Добавил запись в таблцу Members, чтобы другие пользователи имели одно непрочитанное сообщение */
+    UPDATE members
+    SET new_messages = new_messages + 1
+    WHERE chat_id = %(chat_id)s;
+    /* Добавим сообщение в таблицу Messages */
     INSERT INTO messages (chat_id, user_id, content, added_at)
     VALUES ( %(chat_id)s, %(user_id)s, %(content)s, %(added_at)s )
     RETURNING message_id;
