@@ -49,12 +49,22 @@ def find_user(limit: int=100, offset: int=0, **kwargs):
     return db_result[offset:]
 
 
-def create_chat(topic: str="", is_group: int=0):
-    return db.insert_one("""
-    INSERT INTO chats (is_group_chat, topic)
-    VALUES ( %(is_group)s , %(topic)s )
-    RETURNING chat_id;
-    """, is_group=str(is_group), topic=str(topic))
+def create_chat(topic: str,
+                members: list,
+                is_group: int=0):
+    # Создадим чат
+    chat_id = db.insert_one("""
+        INSERT INTO chats (is_group_chat, topic)
+        VALUES ( %(is_group)s , %(topic)s )
+        RETURNING chat_id;
+        """, is_group=str(is_group), topic=str(topic))
+    # Каждого из участников добавим в этот чат
+    for member in members:
+        db.insert_one("""
+        INSERT INTO members (user_id, chat_id, new_messages, last_read_message_id)
+        VALUES ( %(member)s, %(chat_id)s, 0, 0)
+        """, member=member, chat_id=chat_id)
+    return chat_id
 
 
 def read_messages(user_id: int,
