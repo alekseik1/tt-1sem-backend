@@ -84,13 +84,20 @@ def read_messages(user_id: int,
 
 def send_message(chat_id: int=0, user_id: int=0, content: str='hello', added_at: str="1999-10-10 20:09:07"):
     # TODO: В методе чтения сообщений надо будет, напротив, уменьшать число непрочитанных сообщений
-    return db.insert_one("""
-    /* Добавил запись в таблцу Members, чтобы другие пользователи имели одно непрочитанное сообщение */
-    UPDATE members
-    SET new_messages = CAST(new_messages AS INTEGER) + 1
-    WHERE chat_id = %(chat_id)s;
-    /* Добавим сообщение в таблицу Messages */
+    # Создадим сообщение в таблице messages
+    message_id = db.query_all("""
     INSERT INTO messages (chat_id, user_id, content, added_at)
     VALUES ( %(chat_id)s, %(user_id)s, %(content)s, %(added_at)s )
     RETURNING message_id;
     """, chat_id=chat_id, user_id=user_id, content=content, added_at=added_at)
+    if message_id:
+        message_id = message_id[0].get('message_id')
+    # А теперь всем пользователям добавим запись о созданном сообщении
+    # и увеличим счетчик непрочитанных
+    db.query_all("""
+    UPDATE members
+    SET new_messages = CAST(new_messages AS INTEGER) + 1
+    WHERE chat_id = %(chat_id)s
+    RETURNING chat_id
+    """, chat_id=chat_id)
+    return message_id
