@@ -74,7 +74,7 @@ def read_messages(user_id: int,
                   number_of_messages: int):
     return db.query_one("""
     UPDATE members
-    SET new_messages = CAST(new_messages AS INTEGER) - %(number_of_messages)s,
+    SET new_messages = new_messages - %(number_of_messages)s,
         last_read_message_id = %(last_read_message_id)s
     WHERE chat_id = %(chat_id)s
     AND user_id = %(user_id)s
@@ -96,7 +96,7 @@ def send_message(chat_id: int=0, user_id: int=0, content: str='hello', added_at:
     # и увеличим счетчик непрочитанных
     db.query_all("""
     UPDATE members
-    SET new_messages = CAST(new_messages AS INTEGER) + 1
+    SET new_messages = new_messages + 1
     WHERE chat_id = %(chat_id)s
     /* самому себе счетчик увеличивать не надо :) */
     AND user_id != %(user_id)s
