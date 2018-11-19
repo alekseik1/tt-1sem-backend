@@ -73,7 +73,7 @@ def send_message(chat_id: int=0, user_id: int=0, content: str='hello', added_at:
     return db.insert_one("""
     /* Добавил запись в таблцу Members, чтобы другие пользователи имели одно непрочитанное сообщение */
     UPDATE members
-    SET new_messages = new_messages + 1
+    SET new_messages = CAST(new_messages AS INTEGER) + 1
     WHERE chat_id = %(chat_id)s;
     /* Добавим сообщение в таблицу Messages */
     INSERT INTO messages (chat_id, user_id, content, added_at)
