@@ -72,12 +72,13 @@ def read_messages(user_id: int,
                   chat_id: int,
                   last_read_message_id: int,
                   number_of_messages: int):
-    return db.query_one("""
+    db.query_all("""
     UPDATE members
     SET new_messages = new_messages - %(number_of_messages)s,
         last_read_message_id = %(last_read_message_id)s
     WHERE chat_id = %(chat_id)s
     AND user_id = %(user_id)s
+    RETURNING last_read_message_id
     """, chat_id=chat_id, user_id=user_id, number_of_messages=number_of_messages,
                         last_read_message_id=last_read_message_id)
 
