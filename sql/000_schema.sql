@@ -32,7 +32,7 @@ CREATE TABLE members (
     REFERENCES users(user_id),
   chat_id INTEGER NOT NULL
     REFERENCES chats(chat_id),
-  new_messages TEXT NOT NULL,
+  new_messages INTEGER NOT NULL,
   last_read_message_id INTEGER
     REFERENCES messages(message_id)
 );
