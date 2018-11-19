@@ -16,20 +16,6 @@ def list_messages_by_chat(chat_id, limit, offset=0, from_id=0):
     return tmp_res
 
 
-def _get_all_user_info(param: str="user_id",
-                       param_value: str="0",
-                       limit: int=100):
-    # TODO: Переделай через одну передачу и проверку всех условий
-    # TODO: вот таким образом
-    # TODO: WHERE nick= %(nick)s OR name = %(name)s
-    return db.query_all("""
-    SELECT user_id, nick, name, avatar
-    FROM users
-    WHERE {} = %(param_value)s
-    LIMIT %(limit)s;
-    """.format(param), param_value=param_value, limit=int(limit))
-
-
 def find_user(limit: int=100, offset: int=0, **kwargs):
     user_name, user_nick, user_id = kwargs.get('user_name'), kwargs.get('user_nick'), kwargs.get('user_id')
     # TODO: возможно, преобразование к TEXT будет замедлять БД в будущем
