@@ -57,10 +57,13 @@ def create_chat(topic: str="", is_group: int=0):
     """, is_group=str(is_group), topic=str(topic))
 
 
-def read_messages(user_id: int, chat_id: int, last_read_message_id: int, number_of_messages: int):
+def read_messages(user_id: int,
+                  chat_id: int,
+                  last_read_message_id: int,
+                  number_of_messages: int):
     return db.query_one("""
     UPDATE members
-    SET new_messages = new_messages - %(number_of_messages)s,
+    SET new_messages = CAST(new_messages AS INTEGER) - %(number_of_messages)s,
         last_read_message_id = %(last_read_message_id)s
     WHERE chat_id = %(chat_id)s
     AND user_id = %(user_id)s
