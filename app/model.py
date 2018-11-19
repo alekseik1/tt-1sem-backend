@@ -57,6 +57,17 @@ def create_chat(topic: str="", is_group: int=0):
     """, is_group=str(is_group), topic=str(topic))
 
 
+def read_messages(user_id: int, chat_id: int, last_read_message_id: int, number_of_messages: int):
+    return db.query_one("""
+    UPDATE members
+    SET new_messages = new_messages - %(number_of_messages)s,
+        last_read_message_id = %(last_read_message_id)s
+    WHERE chat_id = %(chat_id)s
+    AND user_id = %(user_id)s
+    """, chat_id=chat_id, user_id=user_id, number_of_messages=number_of_messages,
+                        last_read_message_id=last_read_message_id)
+
+
 def send_message(chat_id: int=0, user_id: int=0, content: str='hello', added_at: str="1999-10-10 20:09:07"):
     # TODO: В методе чтения сообщений надо будет, напротив, уменьшать число непрочитанных сообщений
     return db.insert_one("""

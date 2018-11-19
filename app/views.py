@@ -94,3 +94,8 @@ def foo():
 @jsonrpc.method('send_message')
 def send_message(chat_id=0, user_id=0, content='Hello', added_at="2018-11-12 20:09:07"):
     return {'message_id': model.send_message(chat_id, user_id, content, added_at)}
+
+
+@jsonrpc.method('read_messages')
+def read_messages(chat_id, user_id, number_of_messages, last_read_message_id):
+    model.read_messages(user_id, chat_id, last_read_message_id, number_of_messages)
