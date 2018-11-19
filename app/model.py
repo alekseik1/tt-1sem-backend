@@ -98,6 +98,8 @@ def send_message(chat_id: int=0, user_id: int=0, content: str='hello', added_at:
     UPDATE members
     SET new_messages = CAST(new_messages AS INTEGER) + 1
     WHERE chat_id = %(chat_id)s
+    /* самому себе счетчик увеличивать не надо :) */
+    AND user_id != %(user_id)s
     RETURNING chat_id
-    """, chat_id=chat_id)
+    """, chat_id=chat_id, user_id=user_id)
     return message_id
