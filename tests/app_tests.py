@@ -21,17 +21,20 @@ class AppTest(unittest.TestCase):
                 '/create_chat/?topic=%s&is_group=0' % name)
             data = rv.json
             self.assertEqual(data.get('topic', None), name)
+            # TODO: сравнивать результаты в тестах
 
     def test_list_messages_by_chat(self):
         rv = self.app.get('/messages/?chat_id={}'
                           .format(23))  # TODO: сделать тесты через chat_topic
         data = rv.json
         self.assertIsNotNone(data)
+        # TODO: сравнивать результаты в тестах
 
     def test_find_user(self):
         rv = self.app.get('/find_user/?nick=%s' % 'another.user')
         data = rv.json
         self.assertNotEqual(len(data), 0)
+        # TODO: сравнивать результаты в тестах
 
 
 if __name__ == '__main__':
