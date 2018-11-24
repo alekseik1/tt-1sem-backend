@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from app import app
-from app import model
+from app import model, jsonrpc
+from flask_jsonrpc.exceptions import InvalidRequestError
 import json
 
 
@@ -41,57 +42,60 @@ def form():
         return rv
 
 
-@app.route('/get_user_chats/<string:user>/', methods=['GET'])
-@app.route('/get_user_chats/<string:user>', methods=['GET'])
-def get_user_chats(user="Nobody"):
+@jsonrpc.method('get_user_chats')
+def get_user_chats(user_id=0):
     """
     Чаты пользователя
     """
     return create_stub_answer(request, 200)
 
 
-@app.route('/get_user_contacts/<string:user>/', methods=['GET'])
-@app.route('/get_user_contacts/<string:user>', methods=['GET'])
-def get_user_contacts(user="Nobody"):
+@jsonrpc.method('get_user_contacts')
+def get_user_contacts(user_id=0):
     """
     Контакты пользователя
     """
     return create_stub_answer(request, 200)
 
 
-@app.route('/messages/')
-def messages():
-    chat_id = int(request.args.get('chat_id'))
+@jsonrpc.method('get_messages_by_chat')
+def messages_by_chat(chat_id=0, limit=10, offset=0, from_id=0):
     if not chat_id:
-        return jsonify({})
-    # Лимит, если передан
-    limit = int(request.args.get('limit', 10))
-    # Offset, если передан
-    offset = int(request.args.get('offset', 0))
-    messages = model.list_messages_by_chat(chat_id, limit, offset)
-    return jsonify(messages)
+        return {}
+    chat_messages = model.list_messages_by_chat(chat_id, limit, offset, from_id=from_id)
+    return chat_messages
 
 
-@app.route('/find_user/')
-def find_user():
-    user_name = request.args.get('user_name', '%', type=str)
-    user_nick = request.args.get('user_nick', '%', type=str)
-    user_id = request.args.get('user_id', '%', type=str)
+@jsonrpc.method('find_user')
+def find_user(name='%', nick='%', user_id='%'):
 
     limit = request.args.get('limit', 100, type=int)
     offset = request.args.get('offset', 0, type=int)
 
-    users = model.find_user(limit, offset, user_name=user_name, user_nick=user_nick, user_id=user_id)
-    return jsonify(users)
+    users = model.find_user(limit, offset, user_name=name, user_nick=nick, user_id=user_id)
+    return users
 
 
-@app.route('/create_chat/', methods=['POST', 'GET'])
-def create_chat():
-    topic = str(request.args.get('topic'))
-    is_group_chat = int(request.args.get('is_group'))
-    chat_id = model.create_chat(topic, is_group_chat)
-    return jsonify({
+@jsonrpc.method('create_chat')
+def create_chat(topic='Bad chat', members=[0], is_group=0):
+    chat_id = model.create_chat(topic=str(topic), members=members, is_group=is_group)
+    return {
         'topic': topic,
-        'is_group_chat': is_group_chat,
+        'is_group_chat': is_group,
         'chat_id': chat_id
-    })
+    }
+
+
+@jsonrpc.method('print_name')
+def foo():
+    return {"name": "Ivan"}
+
+
+@jsonrpc.method('send_message')
+def send_message(chat_id=0, user_id=0, content='Hello', added_at="2018-11-12 20:09:07"):
+    return {'message_id': model.send_message(chat_id, user_id, content, added_at)}
+
+
+@jsonrpc.method('read_messages')
+def read_messages(chat_id, user_id, number_of_messages, last_read_message_id):
+    model.read_messages(user_id, chat_id, last_read_message_id, number_of_messages)
