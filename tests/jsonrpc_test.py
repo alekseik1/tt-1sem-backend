@@ -52,6 +52,14 @@ class JsonrpcTest(unittest.TestCase):
         self.assertIsNotNone(a)
         print(a.json.get('result'))
 
+    def test_get_user_chats(self):
+        request_json = {'method': 'get_user_chats', 'params': {
+            'user_id': user1_id,
+            'limit': 100
+        }, 'id': 5}
+        a = self.app.post('/api/', json=request_json)
+        print(a.json.get('result'))
+
 
 if __name__ == '__main__':
     unittest.main()
