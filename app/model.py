@@ -52,6 +52,18 @@ def create_chat(topic: str,
     return chat_id
 
 
+def get_user_chats(user_id, limit):
+    chats = db.query_all("""
+    SELECT chats.chat_id, chats.topic
+    FROM chats
+    JOIN members m on chats.chat_id = m.chat_id
+    WHERE m.user_id = %(user_id)s
+    LIMIT %(limit)s
+    """, user_id=user_id, limit=limit)
+    # Возвращаем [] из ID чатов
+    return chats
+
+
 def read_messages(user_id: int,
                   chat_id: int,
                   last_read_message_id: int,
@@ -65,6 +77,21 @@ def read_messages(user_id: int,
     RETURNING last_read_message_id
     """, chat_id=chat_id, user_id=user_id, number_of_messages=number_of_messages,
                         last_read_message_id=last_read_message_id)
+
+def get_chat_for_message(message_id):
+    return db.query_all("""
+    SELECT messages.chat_id, messages.message_id
+    FROM messages
+    WHERE messages.message_id = %(message_id)s
+    RETURNING messages.chat_id
+    """, message_id=message_id)
+
+def mark_as_unread(message_id, chat_id):
+    db.query_all("""
+    UPDATE members
+    SET new_messages = new_messages + 1
+    WHERE chat_id = 
+    """)
 
 
 def send_message(chat_id: int=0, user_id: int=0, content: str='hello', added_at: str="1999-10-10 20:09:07"):

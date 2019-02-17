@@ -3,6 +3,7 @@ from app import app
 from app import model, jsonrpc
 from flask_jsonrpc.exceptions import InvalidRequestError
 import json
+from datetime import datetime
 
 
 @app.route('/')
@@ -43,11 +44,11 @@ def form():
 
 
 @jsonrpc.method('get_user_chats')
-def get_user_chats(user_id=0):
+def get_user_chats(user_id=0, limit=100):
     """
     Чаты пользователя
     """
-    return create_stub_answer(request, 200)
+    return model.get_user_chats(user_id, limit)
 
 
 @jsonrpc.method('get_user_contacts')
@@ -92,8 +93,9 @@ def foo():
 
 
 @jsonrpc.method('send_message')
-def send_message(chat_id=0, user_id=0, content='Hello', added_at="2018-11-12 20:09:07"):
-    return {'message_id': model.send_message(chat_id, user_id, content, added_at)}
+def send_message(chat_id, sender_id, token, message_text, files, geo):
+    added_at = str(datetime.now())
+    return {'message_id': model.send_message(chat_id, sender_id, message_text, added_at)}
 
 
 @jsonrpc.method('read_messages')
