@@ -7,3 +7,4 @@ pytest-flask
 Flask-JSONRPC
 Authlib
 blinker
+flask_cors
