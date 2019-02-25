@@ -57,10 +57,22 @@ def fill_messages():
     import psycopg2.extras
     conn = psycopg2.connect(dbname=config.DB_NAME, user=config.DB_USER, password=config.DB_PASS, host=config.DB_HOST)
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
+    for ind, value in enumerate(MATRIX):
+        chat_id = ind + min(CHAT_IDS)
+        user1, user2 = value
+        for i in range(10):
+            sender = user1 if (i % 2 == 0) else user2
+            cursor.execute("""
+            INSERT INTO messages(chat_id, user_id, content)
+            VALUES (%(chat_id)s, %(user_id)s, %(content)s)
+            """, {'chat_id': chat_id, 'user_id': sender, 'content': 'test {} from {}'.format(i, sender)})
+    cursor.close()
+    conn.commit()
+    conn.close()
 
 
 if __name__ == '__main__':
     fill_users()
     fill_chats()
     fill_members()
+    fill_messages()
