@@ -1,5 +1,6 @@
 from app import db
 from werkzeug.contrib.cache import MemcachedCache
+import sys
 
 cache = MemcachedCache(['127.0.0.1:11211'])
 
@@ -65,8 +66,10 @@ def get_user_chats(user_id, limit):
         WHERE m.user_id = %(user_id)s
         LIMIT %(limit)s
         """, user_id=user_id, limit=limit)
-        cache.set('user_chats_{}'.format(user_id), chats, timeout=10)
+        cache.set('user_chats_{}'.format(user_id), chats, timeout=10*60)
+        print('NO CACHE!', file=sys.stdout)
     # Возвращаем [] из ID чатов
+    print('chats are:', chats, file=sys.stdout)
     return chats
 
 
