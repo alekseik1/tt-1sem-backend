@@ -4,6 +4,7 @@ from instance.config import DevelopmentConfig as config
 
 USER_IDS = range(2, 10)
 CHAT_IDS = range(2, 10)
+MATRIX = [[2, 3], [2, 4], [3, 5], [4, 6], [5, 7], [6, 8], [7, 9], [9, 8]]
 
 
 def fill_users():
@@ -35,7 +36,31 @@ def fill_chats():
     conn.close()
 
 
+def fill_members():
+    import psycopg2.extras
+    conn = psycopg2.connect(dbname=config.DB_NAME, user=config.DB_USER, password=config.DB_PASS, host=config.DB_HOST)
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    for ind, value in enumerate(MATRIX):
+        chat_id = ind + min(CHAT_IDS)
+        for user_id in value:
+            cursor.execute("""
+            INSERT INTO members (user_id, chat_id, new_messages)
+            VALUES (%(user_id)s, %(chat_id)s, 0)
+            ON CONFLICT DO NOTHING;
+            """, {'user_id': user_id, 'chat_id': chat_id})
+    cursor.close()
+    conn.commit()
+    conn.close()
+
+
+def fill_messages():
+    import psycopg2.extras
+    conn = psycopg2.connect(dbname=config.DB_NAME, user=config.DB_USER, password=config.DB_PASS, host=config.DB_HOST)
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+
+
 if __name__ == '__main__':
     fill_users()
     fill_chats()
-
+    fill_members()
