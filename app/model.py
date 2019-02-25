@@ -65,7 +65,7 @@ def get_user_chats(user_id, limit):
         WHERE m.user_id = %(user_id)s
         LIMIT %(limit)s
         """, user_id=user_id, limit=limit)
-        cache.set('user_chats_{}'.format(user_id))
+        cache.set('user_chats_{}'.format(user_id), chats, timeout=10)
     # Возвращаем [] из ID чатов
     return chats
 
