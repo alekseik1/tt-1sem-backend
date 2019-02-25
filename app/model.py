@@ -53,6 +53,8 @@ def create_chat(topic: str,
         VALUES ( %(member)s, %(chat_id)s, 0)
         RETURNING user_id
         """, member=member, chat_id=chat_id)
+        # Обнулим кэш
+        cache.delete('user_chats_{}'.format(member))
     return chat_id
 
 
