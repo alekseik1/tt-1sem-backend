@@ -11,7 +11,8 @@ def fill_users():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     for user_id in USER_IDS:
         cursor.execute("""INSERT INTO users (user_id, nick, name, avatar)
-                      VALUES (%(user_id)s, %(nick)s, %(name)s, %(avatar)s);""",
+                      VALUES (%(user_id)s, %(nick)s, %(name)s, %(avatar)s)
+                      ON CONFLICT DO NOTHING;""",
                        {'user_id': user_id, 'nick': 'test%s' % user_id, 'name': 'test-user', 'avatar': ''})
     cursor.close()
     conn.commit()
