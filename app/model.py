@@ -1,4 +1,7 @@
 from app import db
+from werkzeug.contrib.cache import MemcachedCache
+
+cache = MemcachedCache(['127.0.0.1:11211'])
 
 
 def list_messages_by_chat(chat_id, limit, offset=0, from_id=0):
@@ -53,13 +56,16 @@ def create_chat(topic: str,
 
 
 def get_user_chats(user_id, limit):
-    chats = db.query_all("""
-    SELECT chats.chat_id, chats.topic
-    FROM chats
-    JOIN members m on chats.chat_id = m.chat_id
-    WHERE m.user_id = %(user_id)s
-    LIMIT %(limit)s
-    """, user_id=user_id, limit=limit)
+    chats = cache.get('user_chats_{}'.format(user_id))
+    if chats is None:
+        chats = db.query_all("""
+        SELECT chats.chat_id, chats.topic
+        FROM chats
+        JOIN members m on chats.chat_id = m.chat_id
+        WHERE m.user_id = %(user_id)s
+        LIMIT %(limit)s
+        """, user_id=user_id, limit=limit)
+        cache.set('user_chats_{}'.format(user_id))
     # Возвращаем [] из ID чатов
     return chats
 
