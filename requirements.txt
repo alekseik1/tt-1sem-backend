@@ -8,3 +8,4 @@ Flask-JSONRPC
 Authlib
 blinker
 flask_cors
+python-memcached
