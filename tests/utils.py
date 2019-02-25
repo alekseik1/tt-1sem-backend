@@ -71,8 +71,12 @@ def fill_messages():
     conn.close()
 
 
-if __name__ == '__main__':
+def init_all():
     fill_users()
     fill_chats()
     fill_members()
     fill_messages()
+
+
+if __name__ == '__main__':
+    init_all()
