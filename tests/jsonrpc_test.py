@@ -3,8 +3,8 @@ from app import app, jsonify
 from flask_jsonrpc.proxy import ServiceProxy
 
 # Меняйте их от теста к тесту, я лучше пока не придумал
-user_id = 0
-user1_id = 1
+user_id = 2
+user1_id = 3
 chat_id = 4
 
 
@@ -24,7 +24,8 @@ class JsonrpcTest(unittest.TestCase):
 
     def test_send_message(self):
         request_json = {'method': 'send_message', 'params': {
-                'chat_id': chat_id, 'user_id': user_id, 'content': 'TestMessage'
+                'chat_id': chat_id, 'sender_id': user_id, 'message_text': 'TestMessage',
+                'token': '123123', 'files': None, 'geo': None,
             }, 'id': 1}
         a = self.app.post('/api/', json=request_json)
         self.assertNotEqual(a, None)
