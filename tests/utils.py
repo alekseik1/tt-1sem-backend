@@ -78,5 +78,18 @@ def init_all():
     fill_messages()
 
 
+def ordered(obj):
+    if isinstance(obj, dict):
+        return sorted((k, ordered(v)) for k, v in obj.items())
+    if isinstance(obj, list):
+        return sorted(ordered(x) for x in obj)
+    else:
+        return obj
+
+
+def equals_json(json1, json2):
+    return ordered(json1) == ordered(json2)
+
+
 if __name__ == '__main__':
     init_all()
