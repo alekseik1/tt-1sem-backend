@@ -10,4 +10,5 @@ blinker
 flask_cors
 python-memcached
 flask_sqlalchemy
-flask_scripts
+flask_script
+flask_migrate
