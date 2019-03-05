@@ -1,8 +1,16 @@
 from app import db
+from sqlalchemy import func
 from werkzeug.contrib.cache import MemcachedCache
 import sys
 
 cache = MemcachedCache(['127.0.0.1:11211'])
+
+
+class Chat(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    is_group_chat = db.Column(db.Integer)
+    topic = db.Column(db.String(1000), nullable=False)
+    added_at = db.Column(db.TIMESTAMP, nullable=False, default=func.now())
 
 
 def list_messages_by_chat(chat_id, limit, offset=0, from_id=0):
