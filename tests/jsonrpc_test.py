@@ -1,6 +1,7 @@
 import unittest
 from app import app, jsonify
 from flask_jsonrpc.proxy import ServiceProxy
+from tests.utils import equals_json
 
 # Меняйте их от теста к тесту, я лучше пока не придумал
 user_id = 2
@@ -14,13 +15,19 @@ class JsonrpcTest(unittest.TestCase):
         self.app = app.test_client()
 
     def test_create_chat(self):
+        CHAT_NAME = 'BigChat'
+        MEMBERS = [0, 1]
         request_json = {'method': 'create_chat', 'params': {
-            'topic': 'BigChat',
-            'members': [0, 1],
+            'topic': CHAT_NAME,
+            'members': MEMBERS,
             'is_group': 0
         }, 'id': 1}
         a = self.app.post('/api/', json=request_json)
         self.assertIsNotNone(a)
+        self.assertTrue(equals_json(a,
+                                    {'topic': CHAT_NAME,
+                                     'chat_id': 123,
+                                     'is_group_chat': 0}))
 
     def test_send_message(self):
         request_json = {'method': 'send_message', 'params': {
