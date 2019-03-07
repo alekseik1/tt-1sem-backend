@@ -23,6 +23,17 @@ class User(db.Model):
     avatar = db.Column(db.String, nullable=False)
 
 
+class Message(db.Model):
+    __tablename__ = 'messages'
+    id = db.Column(db.Integer, primary_key=True)
+    chat_id = db.Column(db.Integer, db.ForeignKey('chats.id'))
+    chat = db.relationship("Chat", back_populates='messages')
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = db.relationship('User', back_populates='users')
+    content = db.Column(db.String(65536), nullable=False)
+    added_at = db.Column(db.TIMESTAMP, nullable=False, default=func.now())
+
+
 def list_messages_by_chat(chat_id, limit, offset=0, from_id=0):
     tmp_res = db.query_all("""
         SELECT user_id, nick, name,
