@@ -7,13 +7,15 @@ cache = MemcachedCache(['127.0.0.1:11211'])
 
 
 class Chat(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = 'chats'
+    chat_id = db.Column(db.Integer, primary_key=True)
     is_group_chat = db.Column(db.Integer)
     topic = db.Column(db.String(1000), nullable=False)
     added_at = db.Column(db.TIMESTAMP, nullable=False, default=func.now())
 
 
 class User(db.Model):
+    __tablename__ = 'users'
     user_id = db.Column(db.Integer, primary_key=True)
     nick = db.Column(db.String(32), nullable=False, unique=True)
     name = db.Column(db.String(32), nullable=False)
