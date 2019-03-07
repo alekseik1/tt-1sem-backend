@@ -13,6 +13,13 @@ class Chat(db.Model):
     added_at = db.Column(db.TIMESTAMP, nullable=False, default=func.now())
 
 
+class User(db.Model):
+    user_id = db.Column(db.Integer, primary_key=True)
+    nick = db.Column(db.String(32), nullable=False, unique=True)
+    name = db.Column(db.String(32), nullable=False)
+    avatar = db.Column(db.String, nullable=False)
+
+
 def list_messages_by_chat(chat_id, limit, offset=0, from_id=0):
     tmp_res = db.query_all("""
         SELECT user_id, nick, name,
