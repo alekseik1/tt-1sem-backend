@@ -12,7 +12,7 @@ class Chat(db.Model):
     is_group = db.Column(db.Integer)
     topic = db.Column(db.String(1000), nullable=False)
     added_at = db.Column(db.TIMESTAMP, nullable=False, default=func.now())
-    messages = db.relationship('Message', back_populates='chats')
+    messages = db.relationship('Message', back_populates='chat')
 
 
 class User(db.Model):
@@ -21,6 +21,7 @@ class User(db.Model):
     nick = db.Column(db.String(32), nullable=False, unique=True)
     name = db.Column(db.String(32), nullable=False)
     avatar = db.Column(db.String, nullable=False)
+    messages = db.relationship('Message', back_populates='user')
 
 
 class Message(db.Model):
@@ -29,7 +30,7 @@ class Message(db.Model):
     chat_id = db.Column(db.Integer, db.ForeignKey('chats.id'))
     chat = db.relationship("Chat", back_populates='messages')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user = db.relationship('User', back_populates='users')
+    user = db.relationship('User', back_populates='messages')
     content = db.Column(db.String(65536), nullable=False)
     added_at = db.Column(db.TIMESTAMP, nullable=False, default=func.now())
 
