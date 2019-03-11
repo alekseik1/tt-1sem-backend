@@ -80,13 +80,18 @@ def find_user(name='%', nick='%', user_id='%'):
 
 
 @jsonrpc.method('create_chat')
-def create_chat(topic='Bad chat', members=[0], is_group=0):
-    chat_id = model.create_chat(topic=str(topic), members=members, is_group=is_group)
-    return {
-        'topic': topic,
-        'is_group_chat': is_group,
-        'chat_id': chat_id
-    }
+def create_chat(topic, members_id, is_group):
+    # Создадим чат
+    new_chat = Chat(is_group=is_group, topic=topic)
+    db.session.add(new_chat)
+    # Создадим всех Member для начальных участников
+    initial_members = []
+    for id in members_id:
+        initial_members.append(Member(chat_id=new_chat.id, user_id=id))
+    # Добавим их в чат
+    db.session.add_all(initial_members)
+    db.session.commit()
+    return db.session.query(User).all()
 
 
 @jsonrpc.method('print_name')
