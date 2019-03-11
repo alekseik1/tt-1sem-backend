@@ -2,6 +2,8 @@ from flask import request, jsonify
 from app import app
 from app import model, jsonrpc
 from flask_jsonrpc.exceptions import InvalidRequestError
+from app import db
+from app.model import User, Chat, Message
 import json
 from datetime import datetime
 
@@ -60,11 +62,9 @@ def get_user_contacts(user_id=0):
 
 
 @jsonrpc.method('get_messages_by_chat')
-def messages_by_chat(chat_id=0, limit=10, offset=0, from_id=0):
-    if not chat_id:
-        return {}
-    chat_messages = model.list_messages_by_chat(chat_id, limit, offset, from_id=from_id)
-    return chat_messages
+def get_chat_messages(chat_id, limit=10, offset=0):
+    return [message.as_dict() for message in
+            db.session.query(Message).filter(Chat.id == chat_id)]
 
 
 @jsonrpc.method('find_user')

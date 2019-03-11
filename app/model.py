@@ -34,6 +34,9 @@ class Message(db.Model):
     content = db.Column(db.String(65536), nullable=False)
     added_at = db.Column(db.TIMESTAMP, nullable=False, default=func.now())
 
+    def as_dict(self):
+        return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
+
 
 def list_messages_by_chat(chat_id, limit, offset=0, from_id=0):
     tmp_res = db.query_all("""
