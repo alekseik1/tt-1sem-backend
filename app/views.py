@@ -3,7 +3,8 @@ from app import app
 from app import model, jsonrpc
 from flask_jsonrpc.exceptions import InvalidRequestError
 from app import db
-from app.model import User, Chat, Message
+from app.model import *
+from sqlalchemy.sql.expression import any_
 import json
 from datetime import datetime
 
@@ -50,7 +51,8 @@ def get_user_chats(user_id=0, limit=100):
     """
     Чаты пользователя
     """
-    return model.get_user_chats(user_id, limit)
+    return [chat.as_dict() for chat in
+            db.session.query(Chat).filter(User.id == user_id)]
 
 
 @jsonrpc.method('get_user_contacts')

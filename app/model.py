@@ -6,6 +6,13 @@ import sys
 cache = MemcachedCache(['127.0.0.1:11211'])
 
 
+class Member(db.Model):
+    __tablename__ = 'members'
+    id = db.Column('id', db.Integer, primary_key=True)
+    user_id = db.Column('user_id', db.Integer, db.ForeignKey('users.id'))
+    chat_id = db.Column('chat_id', db.Integer, db.ForeignKey('chats.id'))
+
+
 class Chat(db.Model):
     __tablename__ = 'chats'
     id = db.Column(db.Integer, primary_key=True)
@@ -13,6 +20,10 @@ class Chat(db.Model):
     topic = db.Column(db.String(1000), nullable=False)
     added_at = db.Column(db.TIMESTAMP, nullable=False, default=func.now())
     messages = db.relationship('Message', back_populates='chat')
+    users = db.relationship('User', secondary='members', backref='Chat')
+
+    def as_dict(self):
+        return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
 
 
 class User(db.Model):
@@ -22,6 +33,7 @@ class User(db.Model):
     name = db.Column(db.String(32), nullable=False)
     avatar = db.Column(db.String, nullable=False)
     messages = db.relationship('Message', back_populates='user')
+    chats = db.relationship('Chat', secondary='members', backref='User')
 
 
 class Message(db.Model):
