@@ -66,7 +66,7 @@ def get_user_contacts(user_id=0):
 @jsonrpc.method('get_messages_by_chat')
 def get_chat_messages(chat_id, limit=10, offset=0):
     return [message.as_dict() for message in
-            db.session.query(Message).filter(Chat.id == chat_id)]
+            db.session.query(Message).filter(Chat.id == chat_id).limit(limit).offset(offset)]
 
 
 @jsonrpc.method('find_user')
