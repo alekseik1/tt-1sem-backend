@@ -1,9 +1,10 @@
-from unittest import TestCase, main
+from unittest import TestCase, main, skip
 from app import db
 from tests.utils_orm import fill_all
-from app.views import create_chat
+from app.views import *
 from app.model import User, Chat
-from tests.utils_orm import USER_IDS
+from tests.utils_orm import USER_IDS, chats, users
+import time
 
 
 class ViewsMethodsTest(TestCase):
@@ -27,6 +28,19 @@ class ViewsMethodsTest(TestCase):
         self.assertEqual([user.id for user in chat.users], list(chat_members))
         # У чата нужный топик
         self.assertEqual(chat.topic, CHAT_TOPIC)
+
+    def test_get_chat_messages(self):
+        # Проверим, что после инициализации список сообщений не пуст
+        self.assertNotEqual(len(get_chat_messages(chats[0].id)), 0)
+        # Добавим руками сообщение и проверим, появится ли оно
+        CONTENT = 'Check!'
+        new_mess = Message(chat=chats[0], user=chats[0].users[0], content=CONTENT)
+        db.session.add(new_mess)
+        db.session.commit()
+        # Оно будет последним, проверим его
+        message_json = get_chat_messages(chats[0].id)[-1]
+        self.assertEqual(message_json['user_id'], str(chats[0].users[0].id))
+        self.assertEqual(message_json['content'], CONTENT)
 
 
 if __name__ == '__main__':
