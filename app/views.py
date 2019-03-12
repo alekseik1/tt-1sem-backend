@@ -84,6 +84,7 @@ def create_chat(topic, members_id, is_group):
     # Создадим чат
     new_chat = Chat(is_group=is_group, topic=topic)
     db.session.add(new_chat)
+    db.session.commit()
     # Создадим всех Member для начальных участников
     initial_members = []
     for id in members_id:
