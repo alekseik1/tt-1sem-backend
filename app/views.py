@@ -90,9 +90,15 @@ def create_chat(topic, members_id, is_group):
     return db.session.query(User).all()
 
 
-@jsonrpc.method('print_name')
-def foo():
-    return {"name": "Ivan"}
+@jsonrpc.method('delete_chat')
+def leave_chat(chat_id, user_id):
+    user = db.session.query(User).filter(User.id == user_id).first()
+    chat = next((x for x in user.chats if x.id == chat_id), None)
+    if chat is None:
+        raise ValueError("User {} is not in chat {}".format(user_id, chat_id))
+    user.chats.remove(chat)
+    db.session.commit()
+
 
 
 @jsonrpc.method('send_message')

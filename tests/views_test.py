@@ -42,6 +42,19 @@ class ViewsMethodsTest(TestCase):
         self.assertEqual(message_json['user_id'], str(chats[0].users[0].id))
         self.assertEqual(message_json['content'], CONTENT)
 
+    def test_leave_chat(self):
+        user, chat = users[-1], users[-1].chats[-1]
+        user_id, chat_id = user.id, chat.id
+        with self.subTest("Chat is really deleted"):
+            # Выйдем
+            leave_chat(chat_id=chat_id, user_id=user_id)
+            # Проверим, что чата у пользователя не осталось
+            self.assertIsNone(next((x for x in user.chats if x.id == chat_id), None))
+        with self.subTest("ValueError if user not in chat"):
+            chat_id = 10**5
+            with self.assertRaises(ValueError):
+                leave_chat(chat_id=chat_id, user_id=user_id)
+
 
 if __name__ == '__main__':
     main()
