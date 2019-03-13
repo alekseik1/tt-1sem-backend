@@ -70,6 +70,26 @@ class ViewsMethodsTest(TestCase):
             with self.assertRaises(ValueError):
                 leave_chat(chat_id=chat_id, user_id=user_id)
 
+    def test_join_chat(self):
+        user = self.users[0]
+        # Берем первый попавшийся чат, в котором НЕ состоит пользователь
+        chat = next(chat for chat in self.chats if user not in chat.users)
+        with self.subTest('Simple join'):
+            join_chat(user_id=user.id, chat_id=chat.id)
+        with self.subTest('User is now in chat'):
+            self.assertTrue(chat in user.chats)
+        with self.subTest('Chat has the user'):
+            self.assertTrue(user in chat.users)
+        with self.subTest('Incorrect user'):
+            with self.assertRaises(NotFound):
+                join_chat(user_id=10**8, chat_id=chat.id)
+        with self.subTest('Incorrect chat'):
+            with self.assertRaises(NotFound):
+                join_chat(user_id=user.id, chat_id=10**8)
+        with self.subTest('Already joined'):
+            with self.assertRaises(ValueError):
+                join_chat(user_id=user.id, chat_id=user.chats[0].id)
+
     def test_leave_all_chats(self):
         chat = self.chats[0]
         for user in chat.users:

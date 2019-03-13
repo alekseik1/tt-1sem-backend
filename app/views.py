@@ -50,6 +50,16 @@ def leave_chat(chat_id, user_id):
     user.chats.remove(chat)
     db.session.commit()
 
+
+@jsonrpc.method('join_chat')
+def join_chat(user_id, chat_id):
+    user = db.session.query(User).filter(User.id == user_id).first_or_404()
+    chat = db.session.query(Chat).filter(Chat.id == chat_id).first_or_404()
+    if chat in user.chats:
+        raise ValueError('User {} is already in chat {}'.format(user_id, chat_id))
+    user.chats.append(chat)
+    db.session.commit()
+
 # -------------------------------------------------------------------------
 
 @app.route('/')
