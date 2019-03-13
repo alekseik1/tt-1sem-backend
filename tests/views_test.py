@@ -14,31 +14,34 @@ class ViewsMethodsTest(TestCase):
         self.users, self.chats, self.messages = fill_all()
 
     def test_create_chat(self):
-        CHAT_TOPIC = 'chat_topic_1'
-        chat_members = USER_IDS[:len(USER_IDS) // 2]
-        create_chat(topic=CHAT_TOPIC,
-                    members_id=chat_members,
-                    is_group=0)
+        with self.subTest('Simple create'):
+            CHAT_TOPIC = 'chat_topic_1'
+            chat_members = USER_IDS[:len(USER_IDS) // 2]
+            create_chat(topic=CHAT_TOPIC,
+                        members_id=chat_members,
+                        is_group=0)
         chat = db.session.query(Chat).filter(Chat.topic == CHAT_TOPIC).first()
-        # Чат существует
-        self.assertIsNotNone(chat)
-        # В чате нужные пользователи
-        self.assertEqual([user.id for user in chat.users], list(chat_members))
-        # У чата нужный топик
-        self.assertEqual(chat.topic, CHAT_TOPIC)
+        with self.subTest('Chat exists'):
+            self.assertIsNotNone(chat)
+        with self.subTest('Check member'):
+            self.assertEqual([user.id for user in chat.users], list(chat_members))
+        with self.subTest('Check topic'):
+            self.assertEqual(chat.topic, CHAT_TOPIC)
 
     def test_get_chat_messages(self):
-        # Проверим, что после инициализации список сообщений не пуст
-        self.assertNotEqual(len(get_chat_messages(self.chats[0].id)), 0)
-        # Добавим руками сообщение и проверим, появится ли оно
-        CONTENT = 'Check!'
-        new_mess = Message(chat=self.chats[0], user=self.chats[0].users[0], content=CONTENT)
-        db.session.add(new_mess)
-        db.session.commit()
-        # Оно будет последним, проверим его
-        message_json = get_chat_messages(self.chats[0].id)[-1]
-        self.assertEqual(message_json['user_id'], str(self.chats[0].users[0].id))
-        self.assertEqual(message_json['content'], CONTENT)
+        with self.subTest('Not empty after initialization'):
+            # Проверим, что после инициализации список сообщений не пуст
+            self.assertNotEqual(len(get_chat_messages(self.chats[0].id)), 0)
+        with self.subTest('Is added after manual insert'):
+            # Добавим руками сообщение и проверим, появится ли оно
+            CONTENT = 'Check!'
+            new_mess = Message(chat=self.chats[0], user=self.chats[0].users[0], content=CONTENT)
+            db.session.add(new_mess)
+            db.session.commit()
+            # Оно будет последним, проверим его
+            message_json = get_chat_messages(self.chats[0].id)[-1]
+            self.assertEqual(message_json['user_id'], str(self.chats[0].users[0].id))
+            self.assertEqual(message_json['content'], CONTENT)
 
     def test_leave_chat(self):
         user, chat = self.users[-1], self.users[-1].chats[-1]
