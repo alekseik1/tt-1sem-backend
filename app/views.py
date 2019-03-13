@@ -6,8 +6,51 @@ from app import db
 from app.model import *
 from sqlalchemy.sql.expression import any_
 import json
+from flask import abort
 from datetime import datetime
 
+
+@jsonrpc.method('get_user_chats')
+def get_user_chats(user_id=0, limit=100):
+    """
+    Чаты пользователя
+    """
+    if limit < 0:
+        raise ValueError('Limit should be positive, not %s' % limit)
+    chats = [chat.as_dict() for chat in
+             db.session.query(Chat).filter(User.id == user_id)]
+    if len(chats) == 0:
+        abort(404)
+    return chats
+
+
+@jsonrpc.method('get_messages_by_chat')
+def get_chat_messages(chat_id, limit=10, offset=0):
+    return [message.as_dict() for message in
+            db.session.query(Message).filter(Chat.id == chat_id).limit(limit).offset(offset)]
+
+
+@jsonrpc.method('create_chat')
+def create_chat(topic, members_id, is_group):
+    # Создадим чат
+    new_chat = Chat(is_group=is_group, topic=topic)
+    members = db.session.query(User).filter(User.id.in_(members_id)).all()
+    new_chat.users = members
+    db.session.add(new_chat)
+    db.session.commit()
+    return db.session.query(User).all()
+
+
+@jsonrpc.method('delete_chat')
+def leave_chat(chat_id, user_id):
+    user = db.session.query(User).filter(User.id == user_id).first()
+    chat = next((x for x in user.chats if x.id == chat_id), None)
+    if chat is None:
+        raise ValueError("User {} is not in chat {}".format(user_id, chat_id))
+    user.chats.remove(chat)
+    db.session.commit()
+
+# -------------------------------------------------------------------------
 
 @app.route('/')
 @app.route('/<string:name>/')
@@ -46,28 +89,6 @@ def form():
         return rv
 
 
-@jsonrpc.method('get_user_chats')
-def get_user_chats(user_id=0, limit=100):
-    """
-    Чаты пользователя
-    """
-    return [chat.as_dict() for chat in
-            db.session.query(Chat).filter(User.id == user_id)]
-
-
-@jsonrpc.method('get_user_contacts')
-def get_user_contacts(user_id=0):
-    """
-    Контакты пользователя
-    """
-    return create_stub_answer(request, 200)
-
-
-@jsonrpc.method('get_messages_by_chat')
-def get_chat_messages(chat_id, limit=10, offset=0):
-    return [message.as_dict() for message in
-            db.session.query(Message).filter(Chat.id == chat_id).limit(limit).offset(offset)]
-
 
 @jsonrpc.method('find_user')
 def find_user(name='%', nick='%', user_id='%'):
@@ -79,26 +100,12 @@ def find_user(name='%', nick='%', user_id='%'):
     return users
 
 
-@jsonrpc.method('create_chat')
-def create_chat(topic, members_id, is_group):
-    # Создадим чат
-    new_chat = Chat(is_group=is_group, topic=topic)
-    members = db.session.query(User).filter(User.id.in_(members_id)).all()
-    new_chat.users = members
-    db.session.add(new_chat)
-    db.session.commit()
-    return db.session.query(User).all()
-
-
-@jsonrpc.method('delete_chat')
-def leave_chat(chat_id, user_id):
-    user = db.session.query(User).filter(User.id == user_id).first()
-    chat = next((x for x in user.chats if x.id == chat_id), None)
-    if chat is None:
-        raise ValueError("User {} is not in chat {}".format(user_id, chat_id))
-    user.chats.remove(chat)
-    db.session.commit()
-
+@jsonrpc.method('get_user_contacts')
+def get_user_contacts(user_id=0):
+    """
+    Контакты пользователя
+    """
+    return create_stub_answer(request, 200)
 
 
 @jsonrpc.method('send_message')

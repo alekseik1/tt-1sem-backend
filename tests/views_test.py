@@ -4,6 +4,7 @@ from tests.utils_orm import fill_all
 from app.views import *
 from app.model import User, Chat
 from tests.utils_orm import USER_IDS
+from werkzeug.exceptions import NotFound
 import time
 
 
@@ -44,6 +45,17 @@ class ViewsMethodsTest(TestCase):
             message_json = get_chat_messages(self.chats[0].id)[-1]
             self.assertEqual(message_json['user_id'], str(self.chats[0].users[0].id))
             self.assertEqual(message_json['content'], CONTENT)
+
+    def test_get_user_chats(self):
+        user = self.users[0]
+        with self.subTest('Simple get'):
+            self.assertNotEqual(len(get_user_chats(user_id=user.id)), 0)
+        with self.subTest('Negative limit'):
+            with self.assertRaises(ValueError):
+                get_user_chats(user_id=user.id, limit=-2)
+        with self.subTest('Bad user_id'):
+            with self.assertRaises(NotFound):
+                get_user_chats(user_id=10**8)
 
     def test_leave_chat(self):
         user, chat = self.users[-1], self.users[-1].chats[-1]
