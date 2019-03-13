@@ -9,8 +9,8 @@ cache = MemcachedCache(['127.0.0.1:11211'])
 class Member(db.Model):
     __tablename__ = 'members'
     id = db.Column('id', db.Integer, primary_key=True)
-    user_id = db.Column('user_id', db.Integer, db.ForeignKey('users.id'))
-    chat_id = db.Column('chat_id', db.Integer, db.ForeignKey('chats.id'))
+    user_id = db.Column('user_id', db.Integer, db.ForeignKey('users.id', ondelete='cascade'))
+    chat_id = db.Column('chat_id', db.Integer, db.ForeignKey('chats.id', ondelete='cascade'))
 
 
 class Chat(db.Model):
@@ -50,21 +50,6 @@ class Message(db.Model):
         return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
 
 
-def list_messages_by_chat(chat_id, limit, offset=0, from_id=0):
-    tmp_res = db.query_all("""
-        SELECT user_id, nick, name,
-               message_id, content, added_at
-        FROM messages
-        JOIN users USING (user_id)
-        WHERE chat_id = %(chat_id)s
-        AND message_id > %(from_id)s
-        ORDER BY added_at DESC
-        OFFSET %(offset)s ROWS
-        LIMIT %(limit)s
-""", chat_id=int(chat_id), limit=int(limit), from_id=from_id, offset=int(offset))
-    return tmp_res
-
-
 def find_user(limit: int=100, offset: int=0, **kwargs):
     user_name, user_nick, user_id = kwargs.get('user_name'), kwargs.get('user_nick'), kwargs.get('user_id')
     # TODO: возможно, преобразование к TEXT будет замедлять БД в будущем
@@ -80,27 +65,6 @@ def find_user(limit: int=100, offset: int=0, **kwargs):
     if offset >= len(db_result):
         return []
     return db_result[offset:]
-
-
-def create_chat(topic: str,
-                members: list,
-                is_group: int=0):
-    # Создадим чат
-    chat_id = db.insert_one("""
-        INSERT INTO chats (is_group_chat, topic)
-        VALUES ( %(is_group)s , %(topic)s )
-        RETURNING chat_id;
-        """, is_group=str(is_group), topic=str(topic))
-    # Каждого из участников добавим в этот чат
-    for member in members:
-        db.query_one("""
-        INSERT INTO members (user_id, chat_id, new_messages)
-        VALUES ( %(member)s, %(chat_id)s, 0)
-        RETURNING user_id
-        """, member=member, chat_id=chat_id)
-        # Обнулим кэш
-        cache.delete('user_chats_{}'.format(member))
-    return chat_id
 
 
 def get_user_chats(user_id, limit):
