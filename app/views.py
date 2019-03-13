@@ -83,14 +83,9 @@ def find_user(name='%', nick='%', user_id='%'):
 def create_chat(topic, members_id, is_group):
     # Создадим чат
     new_chat = Chat(is_group=is_group, topic=topic)
+    members = db.session.query(User).filter(User.id.in_(members_id)).all()
+    new_chat.users = members
     db.session.add(new_chat)
-    db.session.commit()
-    # Создадим всех Member для начальных участников
-    initial_members = []
-    for id in members_id:
-        initial_members.append(Member(chat_id=new_chat.id, user_id=id))
-    # Добавим их в чат
-    db.session.add_all(initial_members)
     db.session.commit()
     return db.session.query(User).all()
 
