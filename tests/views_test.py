@@ -56,6 +56,13 @@ class ViewsMethodsTest(TestCase):
             with self.assertRaises(ValueError):
                 leave_chat(chat_id=chat_id, user_id=user_id)
 
+    def test_leave_all_chats(self):
+        chat = self.chats[0]
+        for user in chat.users:
+            leave_chat(chat_id=chat.id, user_id=user.id)
+        # TODO: а стоит ли удалять чат, если в нем нет участников?
+        pass
+
     def tearDown(self):
         db.session.remove()
         db.drop_all()
