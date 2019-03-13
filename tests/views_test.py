@@ -10,6 +10,8 @@ import time
 class ViewsMethodsTest(TestCase):
 
     def setUp(self):
+        db.session.remove()
+        db.drop_all()
         db.create_all()
         self.users, self.chats, self.messages = fill_all()
 
@@ -62,10 +64,6 @@ class ViewsMethodsTest(TestCase):
             leave_chat(chat_id=chat.id, user_id=user.id)
         # TODO: а стоит ли удалять чат, если в нем нет участников?
         pass
-
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
 
 
 if __name__ == '__main__':
