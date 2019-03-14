@@ -123,6 +123,69 @@ class ViewsMethodsTest(TestCase):
             with self.assertRaises(NotFound):
                 send_message(sender_id=user.id, chat_id=10**8, content=CONTENT)
 
+    def test_find_user(self):
+        # Добавим пользователя, которого будем искать
+        NICK, NAME = 'sneaky_228', 'Riki Maru'
+        sneaky_user = User(nick=NICK, name=NAME, avatar='')
+        db.session.add(sneaky_user)
+        db.session.commit()
+
+        def _check_user(user_to_check, another_user=sneaky_user):
+            self.assertEqual(user_to_check['id'], another_user.id)
+            self.assertEqual(user_to_check['name'], another_user.name)
+            self.assertEqual(user_to_check['nick'], another_user.nick)
+
+        with self.subTest('None arguments passed'):
+            self.assertEqual(json.loads(find_user()), [])
+
+        with self.subTest('Find by full nick'):
+            user = json.loads(find_user(nick=NICK))[0]
+            _check_user(user)
+        with self.subTest('Find by full name'):
+            user = json.loads(find_user(name=NAME))[0]
+            _check_user(user)
+        with self.subTest('Name 3 first symbols'):
+            users = json.loads(find_user(name=NAME[:3]))
+            # Пока такой пользователь только один
+            _check_user(users[0])
+        with self.subTest('Nick 3 first symbols'):
+            users = json.loads(find_user(nick=NICK[:3]))
+            _check_user(users[0])
+        with self.subTest('No match nick'):
+            users = json.loads(find_user(nick='123' + NICK))
+            self.assertEqual(len(users), 0)
+        with self.subTest('No match name'):
+            users = json.loads(find_user(name='123' + NAME))
+            self.assertEqual(len(users), 0)
+        # -------------------------------------------------------------------
+        sneaky_user2 = User(nick=NICK + '_1', name=NAME + '_1', avatar='')
+        db.session.add(sneaky_user2)
+        db.session.commit()
+
+        def _check_multiple(user):
+            self.assertTrue(user['id'] in [sneaky_user.id, sneaky_user2.id])
+            self.assertTrue(user['nick'] in [sneaky_user.nick, sneaky_user2.nick])
+            self.assertTrue(user['name'] in [sneaky_user.name, sneaky_user2.name])
+
+        with self.subTest('Length on many matches'):
+            users = json.loads(find_user(nick=NICK))
+            self.assertEqual(len(users), 2)
+        with self.subTest('Every user is correct'):
+            users = json.loads(find_user(nick=NICK))
+            for user in users:
+                _check_multiple(user)
+        # -------------------------------------------------------------------
+        with self.subTest('Many by first 3 letters nick'):
+            users = json.loads(find_user(nick=NICK[:3]))
+            self.assertEqual(len(users), 2)
+            for user in users:
+                _check_multiple(user)
+        with self.subTest('Many by first 3 letters name'):
+            users = json.loads(find_user(name=NAME[:3]))
+            self.assertEqual(len(users), 2)
+            for user in users:
+                _check_multiple(user)
+
 
 if __name__ == '__main__':
     main()
