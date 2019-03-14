@@ -72,6 +72,21 @@ def send_message(sender_id, chat_id, content):
     db.session.commit()
     return message.id
 
+
+@jsonrpc.method('find_user')
+def find_user(nick=None, name=None):
+    if nick is None and name is None:
+        return json.dumps([])
+    if nick is not None:
+        users = [user.as_dict() for user in
+                 db.session.query(User).filter(User.nick.like(nick + '%')).all()]
+        return json.dumps(users)
+    if name is not None:
+        users = [user.as_dict() for user in
+                 db.session.query(User).filter(User.name.like(name + '%')).all()]
+        return json.dumps(users)
+
+
 # -------------------------------------------------------------------------
 
 @app.route('/')
@@ -109,18 +124,6 @@ def form():
     else:
         rv = jsonify(request.form)
         return rv
-
-
-
-@jsonrpc.method('find_user')
-def find_user(name='%', nick='%', user_id='%'):
-
-    limit = request.args.get('limit', 100, type=int)
-    offset = request.args.get('offset', 0, type=int)
-
-    users = model.find_user(limit, offset, user_name=name, user_nick=nick, user_id=user_id)
-    return users
-
 
 @jsonrpc.method('get_user_contacts')
 def get_user_contacts(user_id=0):

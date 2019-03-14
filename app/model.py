@@ -36,6 +36,9 @@ class User(db.Model):
     messages = db.relationship('Message', back_populates='user')
     chats = db.relationship('Chat', secondary='members', backref='User')
 
+    def as_dict(self):
+        return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
+
 
 class Message(db.Model):
     __tablename__ = 'messages'
@@ -49,23 +52,6 @@ class Message(db.Model):
 
     def as_dict(self):
         return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
-
-
-def find_user(limit: int=100, offset: int=0, **kwargs):
-    user_name, user_nick, user_id = kwargs.get('user_name'), kwargs.get('user_nick'), kwargs.get('user_id')
-    # TODO: возможно, преобразование к TEXT будет замедлять БД в будущем
-    db_result = db.query_all("""
-    SELECT user_id, nick, name, avatar
-    FROM users
-    WHERE name LIKE %(user_name)s
-    AND nick LIKE %(nick)s
-    AND CAST(user_id AS TEXT) LIKE %(user_id)s
-    LIMIT %(limit)s
-    """, user_name=str(user_name), nick=str(user_nick), limit=limit, user_id=str(user_id))
-    print(db_result)
-    if offset >= len(db_result):
-        return []
-    return db_result[offset:]
 
 
 def get_user_chats(user_id, limit):

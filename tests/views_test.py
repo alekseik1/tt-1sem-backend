@@ -123,7 +123,7 @@ class ViewsMethodsTest(TestCase):
             with self.assertRaises(NotFound):
                 send_message(sender_id=user.id, chat_id=10**8, content=CONTENT)
 
-    def test_find_user(self):
+    def test_find_user_single(self):
         # Добавим пользователя, которого будем искать
         NICK, NAME = 'sneaky_228', 'Riki Maru'
         sneaky_user = User(nick=NICK, name=NAME, avatar='')
@@ -131,9 +131,9 @@ class ViewsMethodsTest(TestCase):
         db.session.commit()
 
         def _check_user(user_to_check, another_user=sneaky_user):
-            self.assertEqual(user_to_check['id'], another_user.id)
-            self.assertEqual(user_to_check['name'], another_user.name)
-            self.assertEqual(user_to_check['nick'], another_user.nick)
+            self.assertEqual(user_to_check['id'], str(another_user.id))
+            self.assertEqual(user_to_check['name'], str(another_user.name))
+            self.assertEqual(user_to_check['nick'], str(another_user.nick))
 
         with self.subTest('None arguments passed'):
             self.assertEqual(json.loads(find_user()), [])
@@ -158,12 +158,16 @@ class ViewsMethodsTest(TestCase):
             users = json.loads(find_user(name='123' + NAME))
             self.assertEqual(len(users), 0)
         # -------------------------------------------------------------------
+
+    def test_find_user_multiple(self):
+        NICK, NAME = 'multiple_228', 'Marin Komitsky'
+        sneaky_user = User(nick=NICK, name=NAME, avatar='')
         sneaky_user2 = User(nick=NICK + '_1', name=NAME + '_1', avatar='')
-        db.session.add(sneaky_user2)
+        db.session.add_all([sneaky_user, sneaky_user2])
         db.session.commit()
 
         def _check_multiple(user):
-            self.assertTrue(user['id'] in [sneaky_user.id, sneaky_user2.id])
+            self.assertTrue(int(user['id']) in [sneaky_user.id, sneaky_user2.id])
             self.assertTrue(user['nick'] in [sneaky_user.nick, sneaky_user2.nick])
             self.assertTrue(user['name'] in [sneaky_user.name, sneaky_user2.name])
 
@@ -174,7 +178,6 @@ class ViewsMethodsTest(TestCase):
             users = json.loads(find_user(nick=NICK))
             for user in users:
                 _check_multiple(user)
-        # -------------------------------------------------------------------
         with self.subTest('Many by first 3 letters nick'):
             users = json.loads(find_user(nick=NICK[:3]))
             self.assertEqual(len(users), 2)
