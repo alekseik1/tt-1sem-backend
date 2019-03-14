@@ -4,6 +4,7 @@ from werkzeug.contrib.cache import MemcachedCache
 import sys
 
 cache = MemcachedCache(['127.0.0.1:11211'])
+MAX_MESSAGE_SIZE = 65536
 
 
 class Member(db.Model):
@@ -43,7 +44,7 @@ class Message(db.Model):
     chat = db.relationship("Chat", back_populates='messages')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', back_populates='messages')
-    content = db.Column(db.String(65536), nullable=False)
+    content = db.Column(db.String(MAX_MESSAGE_SIZE), nullable=False)
     added_at = db.Column(db.TIMESTAMP, nullable=False, default=func.now())
 
     def as_dict(self):

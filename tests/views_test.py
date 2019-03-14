@@ -2,7 +2,7 @@ from unittest import TestCase, main, skip
 from app import db
 from tests.utils_orm import fill_all
 from app.views import *
-from app.model import User, Chat
+from app.model import User, Chat, MAX_MESSAGE_SIZE
 from tests.utils_orm import USER_IDS
 from werkzeug.exceptions import NotFound
 import time
@@ -96,6 +96,32 @@ class ViewsMethodsTest(TestCase):
             leave_chat(chat_id=chat.id, user_id=user.id)
         # TODO: а стоит ли удалять чат, если в нем нет участников?
         pass
+
+    def test_send_message(self):
+        user = self.users[-1]
+        chat = user.chats[-1]
+        CONTENT = 'TestSuite message'
+        with self.subTest('Simple send'):
+            send_message(sender_id=user.id, chat_id=chat.id, content='123')
+        message_id = send_message(sender_id=user.id, chat_id=chat.id, content=CONTENT)
+        with self.subTest('Chat has messages'):
+            message = next(message for message in chat.messages if message.id == message_id)
+            self.assertIsNotNone(message)
+            self.assertEqual(message.content, CONTENT)
+        with self.subTest('User has messages'):
+            message = next(message for message in user.messages if message.id == message_id)
+            self.assertIsNotNone(message)
+            self.assertEqual(message.content, CONTENT)
+        with self.subTest('ValueError on too long content'):
+            LONG_CONTENT = 'a'*(MAX_MESSAGE_SIZE+1)
+            with self.assertRaises(ValueError):
+                send_message(sender_id=user.id, chat_id=chat.id, content=LONG_CONTENT)
+        with self.subTest('404 on user not found'):
+            with self.assertRaises(NotFound):
+                send_message(sender_id=10*8, chat_id=chat.id, content=CONTENT)
+        with self.subTest('404 on chat not found'):
+            with self.assertRaises(NotFound):
+                send_message(sender_id=user.id, chat_id=10**8, content=CONTENT)
 
 
 if __name__ == '__main__':

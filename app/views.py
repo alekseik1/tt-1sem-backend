@@ -60,6 +60,18 @@ def join_chat(user_id, chat_id):
     user.chats.append(chat)
     db.session.commit()
 
+
+@jsonrpc.method('send_message')
+def send_message(sender_id, chat_id, content):
+    if len(content) > MAX_MESSAGE_SIZE:
+        raise ValueError('Message text max length is {}'.format(MAX_MESSAGE_SIZE))
+    chat = db.session.query(Chat).filter(Chat.id == chat_id).first_or_404()
+    user = db.session.query(User).filter(User.id == sender_id).first_or_404()
+    message = Message(chat=chat, user=user, content=content)
+    chat.messages.append(message)
+    db.session.commit()
+    return message.id
+
 # -------------------------------------------------------------------------
 
 @app.route('/')
@@ -116,12 +128,6 @@ def get_user_contacts(user_id=0):
     Контакты пользователя
     """
     return create_stub_answer(request, 200)
-
-
-@jsonrpc.method('send_message')
-def send_message(chat_id, sender_id, token, message_text, files, geo):
-    added_at = str(datetime.now())
-    return {'message_id': model.send_message(chat_id, sender_id, message_text, added_at)}
 
 
 @jsonrpc.method('read_messages')
