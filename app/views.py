@@ -87,6 +87,15 @@ def find_user(nick=None, name=None):
         return json.dumps(users)
 
 
+@jsonrpc.method('get_user_info')
+def get_user_info(user_id):
+    user_id = int(user_id)
+    return json.dumps(
+        db.session.query(User).filter(User.id == user_id).first_or_404().as_dict()
+    )
+
+
+
 # -------------------------------------------------------------------------
 
 @app.route('/')

@@ -189,6 +189,24 @@ class ViewsMethodsTest(TestCase):
             for user in users:
                 _check_multiple(user)
 
+    def test_get_user_info(self):
+
+        def _check_user(user1, user):
+            return user1['id'] == str(user.id) \
+                   and user1['name'] == user.name \
+                   and user1['nick'] == user.nick
+
+        with self.subTest('Correct values'):
+            for user in self.users:
+                testing_user = json.loads(get_user_info(user.id))
+                self.assertTrue(_check_user(testing_user, user))
+        with self.subTest('404 on not found'):
+            with self.assertRaises(NotFound):
+                get_user_info(user_id=10**8)
+        with self.subTest('ValueError on non-integer id'):
+            with self.assertRaises(ValueError):
+                get_user_info('hello')
+
 
 if __name__ == '__main__':
     main()
