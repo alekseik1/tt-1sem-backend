@@ -51,6 +51,20 @@ def leave_chat(chat_id, user_id):
     db.session.commit()
 
 
+@jsonrpc.method('delete_chat')
+def delete_chat(chat_id, remove_users=False):
+    chat = db.session.query(Chat).filter(Chat.id == chat_id).first_or_404()
+    members = db.session.query(Member).filter(Chat.id == chat.id).all()
+    if len(chat.users) != 0 and not remove_users:
+        raise ValueError('Chat is not empty! To force remove, pass `remove_users=True`')
+    # Выкинем всех пользователей из чата
+    elif len(chat.users) != 0:
+        chat.users = []
+        db.session.commit()
+    db.session.delete(chat)
+    db.session.commit()
+
+
 @jsonrpc.method('join_chat')
 def join_chat(user_id, chat_id):
     user = db.session.query(User).filter(User.id == user_id).first_or_404()

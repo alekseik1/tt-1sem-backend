@@ -207,6 +207,35 @@ class ViewsMethodsTest(TestCase):
             with self.assertRaises(ValueError):
                 get_user_info('hello')
 
+    def test_delete_chat_empty(self):
+        user, chat = self.users[0], self.users[0].chats[0]
+        user_id, chat_id = user.id, chat.id
+        # Сначала все покинут чат
+        chat.users = []
+        db.session.commit()
+        # Затем удалим уже пустой чат
+        with self.subTest('No crash'):
+            delete_chat(chat_id)
+        with self.subTest('No chat after deletion'):
+            chat_query = db.session.query(Chat).filter(Chat.id == chat_id).all()
+            self.assertEqual(len(chat_query), 0)
+
+    def test_delete_chat_with_users(self):
+        user, chat = self.users[0], self.users[0].chats[0]
+        user_id, chat_id = user.id, chat.id
+        with self.subTest('Raises without flag `remove_users`'):
+            with self.assertRaises(ValueError):
+                delete_chat(chat_id)
+        with self.subTest('Chat is deleted with flag'):
+            delete_chat(chat_id, remove_users=True)
+            chat_query = db.session.query(Chat).filter(Chat.id == chat_id).all()
+            self.assertEqual(len(chat_query), 0)
+
+    def test_delete_chat_nonexist(self):
+        chat_id = 10**8
+        with self.assertRaises(NotFound):
+            delete_chat(chat_id)
+
 
 if __name__ == '__main__':
     main()
