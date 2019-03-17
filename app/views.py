@@ -41,7 +41,7 @@ def create_chat(topic, members_id, is_group):
     return db.session.query(User).all()
 
 
-@jsonrpc.method('delete_chat')
+@jsonrpc.method('leave_chat')
 def leave_chat(chat_id, user_id):
     user = db.session.query(User).filter(User.id == user_id).first()
     chat = next((x for x in user.chats if x.id == chat_id), None)
