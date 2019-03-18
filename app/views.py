@@ -8,6 +8,7 @@ from sqlalchemy.sql.expression import any_
 import json
 from flask import abort
 from datetime import datetime
+from app.forms import *
 
 
 @jsonrpc.method('get_user_chats')
@@ -22,6 +23,10 @@ def get_user_chats(user_id=0, limit=100):
     if len(chats) == 0:
         abort(404)
     return chats
+
+
+def validate_user(user):
+    return UserForm(None, user).validate()
 
 
 @jsonrpc.method('get_messages_by_chat')

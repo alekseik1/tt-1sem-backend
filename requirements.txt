@@ -12,3 +12,5 @@ python-memcached
 flask_sqlalchemy
 flask_script
 flask_migrate
+flask-wtf
+WTForms-Alchemy
