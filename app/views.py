@@ -32,7 +32,7 @@ def validate_user(user):
 @jsonrpc.method('get_messages_by_chat')
 def get_chat_messages(chat_id, limit=10, offset=0):
     return [message.as_dict() for message in
-            db.session.query(Message).filter(Chat.id == chat_id).limit(limit).offset(offset)]
+            db.session.query(Message).filter(Message.chat_id == chat_id).limit(limit).offset(offset)]
 
 
 @jsonrpc.method('create_chat')
