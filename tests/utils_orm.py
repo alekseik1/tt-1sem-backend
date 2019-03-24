@@ -2,12 +2,12 @@ from app.model import User, Message, Member, Chat
 from app import db
 import random
 
-USER_IDS = range(228, 300)
-CHAT_IDS = range(228, 300)
+USER_IDS = range(1, 50)
+CHAT_IDS = range(1, 50)
 
 
 def fill_users():
-    users = [User(id=user_id, nick='test_user_{}'.format(user_id),
+    users = [User(nick='test_user_{}'.format(user_id),
                   name='tester_{}'.format(user_id),
                   avatar='REKLAMA') for user_id in USER_IDS]
     db.session.add_all(users)
@@ -16,7 +16,7 @@ def fill_users():
 
 
 def fill_chats():
-    chats = [Chat(id=chat_id, is_group=0, topic='Gen chat_{}'.format(chat_id)) for chat_id in CHAT_IDS]
+    chats = [Chat(is_group=0, topic='Gen chat_{}'.format(chat_id)) for chat_id in CHAT_IDS]
     db.session.add_all(chats)
     db.session.commit()
     return chats
