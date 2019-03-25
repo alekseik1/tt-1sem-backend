@@ -114,8 +114,8 @@ class ViewsMethodsTest(TestCase):
         chat = user.chats[-1]
         CONTENT = 'TestSuite message'
         with self.subTest('Simple send'):
-            send_message(sender_id=user.id, chat_id=chat.id, content='123')
-        message_id = send_message(sender_id=user.id, chat_id=chat.id, content=CONTENT)
+            send_message(sender_id=user.id, chat_id=chat.id, text='123', token='-1')
+        message_id = send_message(sender_id=user.id, chat_id=chat.id, text=CONTENT, token='-1')
         with self.subTest('Chat has messages'):
             message = next(message for message in chat.messages if message.id == message_id)
             self.assertIsNotNone(message)
@@ -127,13 +127,13 @@ class ViewsMethodsTest(TestCase):
         with self.subTest('ValueError on too long content'):
             LONG_CONTENT = 'a'*(MAX_MESSAGE_SIZE+1)
             with self.assertRaises(ValueError):
-                send_message(sender_id=user.id, chat_id=chat.id, content=LONG_CONTENT)
+                send_message(sender_id=user.id, chat_id=chat.id, text=LONG_CONTENT, token='-1')
         with self.subTest('404 on user not found'):
             with self.assertRaises(NotFound):
-                send_message(sender_id=10*8, chat_id=chat.id, content=CONTENT)
+                send_message(sender_id=10 * 8, chat_id=chat.id, text=CONTENT, token='-1')
         with self.subTest('404 on chat not found'):
             with self.assertRaises(NotFound):
-                send_message(sender_id=user.id, chat_id=10**8, content=CONTENT)
+                send_message(sender_id=user.id, chat_id=10 ** 8, text=CONTENT, token='-1')
 
     def test_find_user_single(self):
         # Добавим пользователя, которого будем искать

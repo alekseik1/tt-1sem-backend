@@ -85,12 +85,12 @@ def join_chat(user_id, chat_id):
 
 
 @jsonrpc.method('send_message')
-def send_message(sender_id, chat_id, content):
-    if len(content) > MAX_MESSAGE_SIZE:
+def send_message(sender_id, chat_id, text, token, geo=None, files=[]):
+    if len(text) > MAX_MESSAGE_SIZE:
         raise ValueError('Message text max length is {}'.format(MAX_MESSAGE_SIZE))
     chat = db.session.query(Chat).filter(Chat.id == chat_id).first_or_404()
     user = db.session.query(User).filter(User.id == sender_id).first_or_404()
-    message = Message(chat=chat, user=user, content=content)
+    message = Message(chat=chat, user=user, content=text)
     chat.messages.append(message)
     db.session.commit()
     return message.id
