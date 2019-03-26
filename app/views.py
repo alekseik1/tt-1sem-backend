@@ -47,7 +47,9 @@ def create_chat(topic, users_id, is_group):
         raise ValueError('One or more users does not exist')
     new_chat.users = users
     for user in users:
-        send_registration_mail.delay(user.email, user.nick).get()
+        # Если у пользователя есть email
+        if user.email:
+            send_registration_mail.delay(user.email, user.nick).get()
     db.session.add(new_chat)
     db.session.commit()
     return db.session.query(User).all()
