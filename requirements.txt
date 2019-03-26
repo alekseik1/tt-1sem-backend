@@ -16,3 +16,5 @@ flask-wtf
 WTForms-Alchemy
 celery
 redis
+flower
+flask_mail

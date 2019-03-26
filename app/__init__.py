@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from app.flask_celery import make_celery
+from flask_mail import Mail
 
 app = Flask(__name__)
 CORS(app)
@@ -29,3 +30,6 @@ manager.add_command('db', MigrateCommand)
 celery = make_celery(app)
 
 from .views import *
+
+# Настроим почтовик
+mail = Mail(app)
