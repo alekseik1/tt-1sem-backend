@@ -35,6 +35,7 @@ class User(db.Model):
     avatar = db.Column(db.String, nullable=False)
     messages = db.relationship('Message', back_populates='user')
     chats = db.relationship('Chat', secondary='members', backref='User')
+    email = db.Column(db.String(50), nullable=True, default=None)
 
     def as_dict(self):
         return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}

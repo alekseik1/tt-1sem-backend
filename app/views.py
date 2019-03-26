@@ -9,6 +9,7 @@ import json
 from flask import abort
 from datetime import datetime
 from app.forms import *
+from app.tasks import send_registration_mail
 
 
 @jsonrpc.method('get_user_chats')
@@ -45,6 +46,8 @@ def create_chat(topic, users_id, is_group):
     if len(users) != len(users_id):
         raise ValueError('One or more users does not exist')
     new_chat.users = users
+    for user in users:
+        send_registration_mail.delay(user.email, user.nick).get()
     db.session.add(new_chat)
     db.session.commit()
     return db.session.query(User).all()

@@ -10,6 +10,10 @@ def fill_users():
     users = [User(nick='test_user_{}'.format(user_id),
                   name='tester_{}'.format(user_id),
                   avatar='REKLAMA') for user_id in USER_IDS]
+    # Первому и последнему пользователю дадим мой email
+    MY_EMAIL = '1alekseik1@gmail.com'
+    # Где-то в тестах используется users[0], где-то users[-1], поэтому дадим email обоим
+    users[0].email, users[-1].email = MY_EMAIL, MY_EMAIL
     db.session.add_all(users)
     db.session.commit()
     return users
