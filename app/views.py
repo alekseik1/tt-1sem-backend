@@ -36,15 +36,15 @@ def get_chat_messages(chat_id, limit=10, offset=0):
 
 
 @jsonrpc.method('create_chat')
-def create_chat(topic, members_id, is_group):
+def create_chat(topic, users_id, is_group):
     # Создадим чат
     new_chat = Chat(is_group=is_group, topic=topic)
     # Тут могут быть не все пользователи, что указаны в запросе
-    members = db.session.query(User).filter(User.id.in_(members_id)).all()
+    users = db.session.query(User).filter(User.id.in_(users_id)).all()
     # В случае несовпадения длин мы выкинем ошибку
-    if len(members) != len(members_id):
+    if len(users) != len(users_id):
         raise ValueError('One or more users does not exist')
-    new_chat.users = members
+    new_chat.users = users
     db.session.add(new_chat)
     db.session.commit()
     return db.session.query(User).all()

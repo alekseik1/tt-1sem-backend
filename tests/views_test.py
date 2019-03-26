@@ -21,7 +21,7 @@ class ViewsMethodsTest(TestCase):
             CHAT_TOPIC = 'chat_topic_1'
             chat_members = USER_IDS[:len(USER_IDS)]
             create_chat(topic=CHAT_TOPIC,
-                        members_id=list(chat_members),
+                        users_id=list(chat_members),
                         is_group=0)
         chat = db.session.query(Chat).filter(Chat.topic == CHAT_TOPIC).first()
         with self.subTest('Chat exists'):
@@ -36,12 +36,12 @@ class ViewsMethodsTest(TestCase):
         with self.subTest('Create chat: no such user'):
             chat_members = [max(USER_IDS) + 1]
             with self.assertRaises(ValueError):
-                create_chat(topic=CHAT_TOPIC, members_id=list(chat_members), is_group=0)
+                create_chat(topic=CHAT_TOPIC, users_id=list(chat_members), is_group=0)
         with self.subTest('Create chat: one user does not exist'):
             chat_members = list(USER_IDS)
             chat_members.append(max(USER_IDS) + 1)     # Добавим 1 лишнего)
             with self.assertRaises(ValueError):
-                create_chat(topic=CHAT_TOPIC, members_id=list(chat_members), is_group=0)
+                create_chat(topic=CHAT_TOPIC, users_id=list(chat_members), is_group=0)
 
     def test_get_chat_messages(self):
         with self.subTest('Not empty after initialization'):
