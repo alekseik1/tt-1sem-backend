@@ -29,7 +29,8 @@ manager.add_command('db', MigrateCommand)
 
 celery = make_celery(app)
 
-from .views import *
-
 # Настроим почтовик
 mail = Mail(app)
+
+
+from .views import *
