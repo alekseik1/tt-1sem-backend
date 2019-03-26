@@ -14,14 +14,14 @@ def add_together(a, b):
 
 
 @celery.task(soft_time_limit=3, time_limit=10)
-def send_registration_mail(user_email, user_login):
+def send_registration_mail(user_email, nick):
     message = Message('Hello from Quack team!',
                       sender=app.config['ADMINS'][0], recipients=[user_email])
-    message.html = REG_MESSAGE_TEMPLATE.format(login=user_login)
+    message.html = REG_MESSAGE_TEMPLATE.format(login=nick)
 
     with app.app_context():
         mail.send(message)
 
 
 if __name__ == '__main__':
-    send_registration_mail(user_email='1alekseik1@gmail.com', user_login='alekseik1')
+    send_registration_mail(user_email='1alekseik1@gmail.com', nick='alekseik1')
