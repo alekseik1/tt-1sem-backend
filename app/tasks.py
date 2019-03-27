@@ -23,5 +23,11 @@ def send_registration_mail(user_email, nick):
         mail.send(message)
 
 
-if __name__ == '__main__':
-    send_registration_mail(user_email='1alekseik1@gmail.com', nick='alekseik1')
+@celery.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    sender.add_periodic_task\
+        (10.0,
+         send_registration_mail.s('1alekseik1@gmail.com', 'alekseik1'),
+         name='TEST ONLY: Send email every 10 seconds'
+         )
+    celery.conf.timezone = 'UTC'
