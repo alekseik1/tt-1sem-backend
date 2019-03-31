@@ -1,5 +1,5 @@
 from flask import Flask
-from instance.config import TestingConfig as config
+from instance.config import ProductionConfig as config
 from flask_jsonrpc import JSONRPC
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
