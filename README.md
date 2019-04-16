@@ -11,6 +11,10 @@ virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
+Поддерживается запуск через _Docker_:
+```bash
+docker run -p 5000:5000 tt-test
+```
 #### Двусвязный список
 Запуск тестов производится командой:
 ```bash
