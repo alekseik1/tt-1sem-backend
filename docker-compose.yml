@@ -1,0 +1,14 @@
+version: '2'
+services:
+  gunicorn:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-gunicorn
+    expose:
+      - "5000"
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-nginx
+    ports:
+      - "0.0.0.0:80:80"
