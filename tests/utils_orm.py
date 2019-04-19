@@ -67,3 +67,16 @@ def damerau_levenshtein_distance(s1, s2):
             if i and j and s1[i] == s2[j - 1] and s1[i - 1] == s2[j]:
                 d[(i, j)] = min(d[(i, j)], d[i - 2, j - 2] + cost)  # transposition
     return d[lenstr1 - 1, lenstr2 - 1]
+
+
+def ordered(obj):
+    if isinstance(obj, dict):
+        return sorted((k, ordered(v)) for k, v in obj.items())
+    if isinstance(obj, list):
+        return sorted(ordered(x) for x in obj)
+    else:
+        return obj
+
+
+def compare_json(json1, json2):
+    return ordered(json1) == ordered(json2)
