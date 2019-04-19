@@ -1,5 +1,5 @@
 import unittest
-from tests.utils import equals_json
+from tests.OLD_SQL_utils import equals_json
 
 
 class UtilsTest(unittest.TestCase):
