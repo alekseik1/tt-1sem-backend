@@ -5,6 +5,7 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
+from elasticsearch import Elasticsearch
 
 app = Flask(__name__)
 CORS(app)
@@ -19,5 +20,9 @@ migrate = Migrate(app, db)
 jsonrpc = JSONRPC(app, '/api/')
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
+
+# Elasticsearch
+app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
+    if app.config['ELASTICSEARCH_URL'] else None
 
 from .views import *
