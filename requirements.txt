@@ -18,3 +18,4 @@ celery
 redis
 flower
 flask_mail
+elasticsearch

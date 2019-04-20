@@ -1,10 +1,55 @@
-from app import db
+from app import db, app
+from app.search import add_to_index, remove_from_index, query_index
 from sqlalchemy import func
 from werkzeug.contrib.cache import MemcachedCache
 import sys
 
 cache = MemcachedCache(['127.0.0.1:11211'])
 MAX_MESSAGE_SIZE = 65536
+
+
+class SearchableMixin(object):
+    @classmethod
+    def search(cls, expression, page, per_page):
+        ids, total = query_index(cls.__tablename__, expression, page, per_page)
+        if total == 0:
+            return ids, total
+        when = []
+        for i in range(len(ids)):
+            when.append((ids[i], i))
+        return cls.query.filter(cls.id.in_(ids)).order_by(
+            db.case(when, value=cls.id)).all(), total
+
+    @classmethod
+    def before_commit(cls, session):
+        session._changes = {
+            'add': list(session.new),
+            'update': list(session.dirty),
+            'delete': list(session.deleted)
+        }
+
+    @classmethod
+    def after_commit(cls, session):
+        for obj in session._changes['add']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['update']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['delete']:
+            if isinstance(obj, SearchableMixin):
+                remove_from_index(obj.__tablename__, obj)
+        session._changes = None
+
+    @classmethod
+    def reindex(cls):
+        for obj in cls.query:
+            add_to_index(cls.__tablename__, obj)
+
+
+db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)
+db.event.listen(db.session, 'after_commit', SearchableMixin.after_commit)
+
 
 
 class Member(db.Model):
@@ -14,8 +59,9 @@ class Member(db.Model):
     chat_id = db.Column('chat_id', db.Integer, db.ForeignKey('chats.id', ondelete='cascade'))
 
 
-class Chat(db.Model):
+class Chat(SearchableMixin, db.Model):
     __tablename__ = 'chats'
+    __searchable__ = ['topic']
     id = db.Column(db.Integer, primary_key=True)
     is_group = db.Column(db.Integer)
     topic = db.Column(db.String(1000), nullable=False)
@@ -27,8 +73,9 @@ class Chat(db.Model):
         return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
 
 
-class User(db.Model):
+class User(SearchableMixin, db.Model):
     __tablename__ = 'users'
+    __searchable__ = ['nick', 'name']
     id = db.Column(db.Integer, primary_key=True)
     nick = db.Column(db.String(32), nullable=False, unique=True)
     name = db.Column(db.String(32), nullable=False)
@@ -41,8 +88,9 @@ class User(db.Model):
         return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
 
 
-class Message(db.Model):
+class Message(SearchableMixin, db.Model):
     __tablename__ = 'messages'
+    __searchable__ = ['content']
     id = db.Column(db.Integer, primary_key=True)
     chat_id = db.Column(db.Integer, db.ForeignKey('chats.id'))
     chat = db.relationship("Chat", back_populates='messages')

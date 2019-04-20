@@ -1,5 +1,5 @@
 from flask import Flask
-from instance.config import ProductionConfig as config
+from instance.config import TestingConfig as config
 from flask_jsonrpc import JSONRPC
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -7,6 +7,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from app.flask_celery import make_celery
 from flask_mail import Mail
+from elasticsearch import Elasticsearch
 
 app = Flask(__name__)
 CORS(app)
@@ -32,5 +33,9 @@ celery = make_celery(app)
 # Настроим почтовик
 mail = Mail(app)
 
+
+# Elasticsearch
+app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
+    if app.config['ELASTICSEARCH_URL'] else None
 
 from .views import *

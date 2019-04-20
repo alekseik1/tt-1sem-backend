@@ -1,7 +1,7 @@
 import unittest
 from app import app, jsonify
 from flask_jsonrpc.proxy import ServiceProxy
-from tests.utils import equals_json
+from tests.OLD_SQL_utils import equals_json
 
 # Меняйте их от теста к тесту, я лучше пока не придумал
 user_id = 2
