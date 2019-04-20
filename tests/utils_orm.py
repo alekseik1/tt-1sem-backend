@@ -16,7 +16,7 @@ def fill_users():
 
 
 def fill_chats():
-    chats = [Chat(is_group=0, topic='Gen chat_{}'.format(chat_id)) for chat_id in CHAT_IDS]
+    chats = [Chat(is_group=0, topic='{}_Gen chat_{}'.format(chat_id, chat_id)) for chat_id in CHAT_IDS]
     db.session.add_all(chats)
     db.session.commit()
     return chats

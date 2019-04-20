@@ -1,7 +1,7 @@
 from unittest import TestCase, main
 from app import db, app
 from tests.utils_orm import fill_all
-from app.model import User
+from app.model import User, Chat
 import time
 
 
@@ -44,6 +44,15 @@ class ElasticsearchTests(TestCase):
                 found, total = User.search(u.nick, 1, 100)
                 self.assertEqual(total, 1)
                 self.assertEqual(found[0], u)
+
+    def test_search_chat(self):
+        chats = [self.chats[0]]
+        with self.subTest('Chat by name'):
+            found, total = Chat.search(chats[0].topic, 1, 100)
+            self.assertEqual(total, 1)
+        with self.subTest('No chat found'):
+            found, total = Chat.search('I dont exist', 1, 100)
+            self.assertEqual(total, 0)
 
 
 if __name__ == '__main__':

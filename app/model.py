@@ -59,8 +59,9 @@ class Member(db.Model):
     chat_id = db.Column('chat_id', db.Integer, db.ForeignKey('chats.id', ondelete='cascade'))
 
 
-class Chat(db.Model):
+class Chat(SearchableMixin, db.Model):
     __tablename__ = 'chats'
+    __searchable__ = ['topic']
     id = db.Column(db.Integer, primary_key=True)
     is_group = db.Column(db.Integer)
     topic = db.Column(db.String(1000), nullable=False)
