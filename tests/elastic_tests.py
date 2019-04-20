@@ -1,10 +1,14 @@
 from unittest import TestCase, main
 from app import db, app
 from tests.utils_orm import fill_all
-from app.model import User, Chat
+from app.model import User, Chat, Message
 import time
 
 
+"""
+TODO: тесты весьма плохие, проверяют только базовые вещи.
+Я еще не слишком расшарился, чтобы сделать их крутыми и всеобъемлющими
+"""
 class ElasticsearchTests(TestCase):
 
     def setUp(self):
@@ -52,6 +56,16 @@ class ElasticsearchTests(TestCase):
             self.assertEqual(total, 1)
         with self.subTest('No chat found'):
             found, total = Chat.search('I dont exist', 1, 100)
+            self.assertEqual(total, 0)
+
+    def test_search_message(self):
+        messages = [self.messages[0]]
+        with self.subTest('Message by content'):
+            # Предполагается, что найдет только одно сообщение. Так подогнаны данные в тестах
+            found, total = Message.search(messages[0].content, 1, 100)
+            self.assertEqual(total, 1)
+        with self.subTest('Message not found'):
+            found, total = Message.search('I really dont exist', 1, 100)
             self.assertEqual(total, 0)
 
 

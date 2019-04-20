@@ -87,8 +87,9 @@ class User(SearchableMixin, db.Model):
         return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
 
 
-class Message(db.Model):
+class Message(SearchableMixin, db.Model):
     __tablename__ = 'messages'
+    __searchable__ = ['content']
     id = db.Column(db.Integer, primary_key=True)
     chat_id = db.Column(db.Integer, db.ForeignKey('chats.id'))
     chat = db.relationship("Chat", back_populates='messages')
