@@ -6,9 +6,31 @@ services:
       dockerfile: docker/Dockerfile-gunicorn
     expose:
       - "5000"
-  nginx:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile-nginx
     ports:
-      - "0.0.0.0:80:80"
+      - "5000:5000"
+    depends_on:
+      - redis
+      - es0
+  nginx:
+    image: nginx
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8080:80"
+    command: /bin/bash -c "exec nginx -g 'daemon off;'" 
+  es0:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+    environment:
+      - discovery.seed_hosts=es0
+      - cluster.initial_master_nodes=es0
+      - cluster.name=docker-cluster
+    expose:
+      - "9200"
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536 
+  redis:
+    image: redis
+    expose:
+      - "6379"
