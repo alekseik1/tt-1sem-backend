@@ -13,7 +13,7 @@ tests: environment celery
 	PYTHONPATH=$(ROOT) $(VENV)/python tests/views_test.py
 
 run: environment celery
-	PYTHONPATH=$(ROOT) $(VENV)/python run.py runserver
+	PYTHONPATH=$(ROOT) $(VENV)/gunicorn -b 0.0.0.0:5000 app:app
 
 celery: environment
 	$(VENV)/celery worker -A app.celery -l info -D --pidfile $(PIDFILE)

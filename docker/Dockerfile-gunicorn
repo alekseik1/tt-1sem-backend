@@ -14,5 +14,3 @@ USER flask
 EXPOSE 5000
 
 RUN ["make", "environment"]
-
-ENTRYPOINT ["make", "run"]
