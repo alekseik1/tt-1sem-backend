@@ -3,8 +3,10 @@ ROOT:=$(shell pwd)
 VENV=$(ROOT)/venv/bin
 PIDFILE:=$(ROOT)/celery.pid
 REQ_FILE:=$(ROOT)/requirements.txt
+PYTHON_PATH:=/usr/bin/python3
 
 environment:
+	if [[ ! -e venv ]]; then virtualenv -p $(PYTHON_PATH) venv; fi
 	$(VENV)/pip install -r $(REQ_FILE)
 
 tests: environment celery
