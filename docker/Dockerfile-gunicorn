@@ -11,12 +11,8 @@ RUN if [ -e venv ]; then rm -rf venv; fi
 RUN chown -R flask:flask /app
 
 USER flask
-
-RUN python3 -m venv venv
-RUN ./venv/bin/pip install --upgrade pip
-RUN ./venv/bin/pip install -r requirements.txt
-ENV FLASK_APP run.py
 EXPOSE 5000
 
-#CMD ["/bin/bash"]
-ENTRYPOINT ["/bin/bash", "-c", "source ./init_environment.sh; ./boot.sh"]
+RUN ["make", "environment"]
+
+ENTRYPOINT ["make", "run"]
