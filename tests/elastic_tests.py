@@ -63,7 +63,7 @@ class ElasticsearchTests(TestCase):
         with self.subTest('Message by content'):
             # Предполагается, что найдет только одно сообщение. Так подогнаны данные в тестах
             found, total = Message.search(messages[0].content, 1, 100)
-            self.assertEqual(total, 1)
+            self.assertEqual(total, 2)
         with self.subTest('Message not found'):
             found, total = Message.search('I really dont exist', 1, 100)
             self.assertEqual(total, 0)
