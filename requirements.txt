@@ -19,3 +19,6 @@ redis
 flower
 flask_mail
 elasticsearch
+beautifulsoup4
+requests
+lxml
