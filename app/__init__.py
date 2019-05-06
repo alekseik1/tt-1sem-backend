@@ -1,5 +1,5 @@
 from flask import Flask
-from instance.config import TestingConfig as config
+from instance.config import DockerTestingConfig as config
 from flask_jsonrpc import JSONRPC
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -35,6 +35,7 @@ mail = Mail(app)
 
 
 # Elasticsearch
+app.config['ELASTICSEARCH_URL'] = None
 app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
     if app.config['ELASTICSEARCH_URL'] else None
 
