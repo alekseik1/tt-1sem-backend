@@ -27,3 +27,6 @@ migrate_db: environment
 
 upgrade_db: migrate
 	PYTHONPATH=$(ROOT) $(VENV)/python run.py db upgrade
+
+daemon: environment
+	bash -c "./venv/bin/python app/daemon.py"
